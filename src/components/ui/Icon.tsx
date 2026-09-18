@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-/* Ikony 1:1 z Figma komponentu Icon (Lucide štýl, stroke 1.75). Farba cez currentColor. */
+/* Icons 1:1 from the Figma Icon component (Lucide style, stroke 1.75). Color via currentColor. */
 const paths = {
   "calendar": (
     <>

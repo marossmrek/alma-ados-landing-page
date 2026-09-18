@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import { cx } from "@/lib/cx";
 
-/* Slovenský zápis desatinných čísel (čiarka) */
+/* Slovak decimal notation (comma separator) */
 export function fmt(n: number, decimals: number) {
   return n.toFixed(decimals).replace(".", ",");
 }
 
-/* Číslo, ktoré sa k novej hodnote „dopočíta" (GSAP), pri reduced motion sa len prepne */
+/* Number that counts up to the new value (GSAP); with reduced motion it just switches */
 export function Counter({
   value,
   className,

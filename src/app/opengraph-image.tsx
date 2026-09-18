@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { BRAND, BRAND_MARK_PATHS } from "@/lib/brand";
 
-/* OG/Twitter karta: dlaždica so znakom, wordmark a hlavný sľub stránky. Generuje sa pri builde. */
+/* OG/Twitter card: mark tile, wordmark and the page's main promise. Generated at build time. */
 export const alt = `${BRAND.name}: dokumentácia vzniká pri pacientovi`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

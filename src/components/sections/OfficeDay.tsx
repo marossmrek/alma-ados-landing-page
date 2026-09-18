@@ -14,9 +14,9 @@ import { Counter } from "@/components/ui/Counter";
 import { Icon } from "@/components/ui/Icon";
 
 /*
-  Prehľad pre vedúcu sestru v troch zastávkach. Rovnaký jazyk ako „Jeden deň sestry":
-  pripnutý panel, časová os, spotlight na dashboarde sa prepína scrollom.
-  Súradnice oblastí sú v priestore mockupu 1200 × 794 (Figma „Browser · Backoffice").
+  Head nurse overview in three stops. Same language as "Jeden deň sestry" (FieldDay):
+  pinned panel, timeline, dashboard spotlight switched by scroll.
+  Area coordinates are in the 1200 × 794 mockup space (Figma "Browser · Backoffice").
 */
 type Rect = { x: number; y: number; w: number; h: number };
 
@@ -77,7 +77,7 @@ const PLANNED = [
 const W = 1200;
 const H = 794;
 
-/* Dashboard so spotlightom: maska stmaví všetko okrem oblastí aktívnej zastávky */
+/* Dashboard with spotlight: the mask darkens everything except the active stop's areas */
 function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; sizes: string }) {
   const stop = STOPS[active];
   const first = stop.rects[0];
@@ -143,7 +143,7 @@ function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; si
   );
 }
 
-/* Stav dňa: čísla, ktoré sa so zastávkami menia (dashboard tak nie je len obrázok) */
+/* Day status: numbers that change with the stops (so the dashboard is not just an image) */
 function DayCounters({ active, compact = false }: { active: number; compact?: boolean }) {
   const c = STOPS[active].counts;
   return (
@@ -230,7 +230,7 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
   );
 }
 
-export function PreAdos() {
+export function OfficeDay() {
   const panelRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
@@ -304,7 +304,7 @@ export function PreAdos() {
           lead="Webová časť dáva vedúcej sestre a administratíve prehľad o návštevách, dokumentácii a údajoch, ktoré si vyžadujú kontrolu. Na jednom mieste vidia, čo sa deje v teréne a čo je pripravené na ďalšie spracovanie."
         />
 
-        {/* Pripnutý panel: dashboard vľavo (hore na mobile), časová os vpravo */}
+        {/* Pinned panel: dashboard on the left (on top on mobile), timeline on the right */}
         <div className="w-full">
           <div
             ref={panelRef}
@@ -358,7 +358,7 @@ export function PreAdos() {
               </ol>
             </div>
 
-            {/* Mobil */}
+            {/* Mobile */}
             <div className="office-mobile flex flex-col items-center gap-3 lg:hidden">
               <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
               <Dashboard active={active} tipId={`${tipId}-m`} sizes="100vw" />
@@ -389,7 +389,7 @@ export function PreAdos() {
           </div>
         </div>
 
-        {/* Ďalšie oblasti webovej časti */}
+        {/* Other areas of the web part */}
         <div className="flex flex-col items-start gap-5 lg:gap-6">
           <Badge variant="status" className="gsap-reveal">
             Ďalej plánujeme · vo vývoji

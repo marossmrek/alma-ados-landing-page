@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-/* Čas vykreslenia formulára pre časovú kontrolu proti robotom (nastaví sa až na klientovi) */
+/* Form render time for the timing check against bots (set only on the client) */
 export function FormTimestamp() {
   const [ts, setTs] = useState("");
   useEffect(() => {

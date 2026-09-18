@@ -8,8 +8,8 @@ import { BRAND } from "@/lib/brand";
 import { BrandMark } from "@/components/ui/BrandMark";
 
 /*
-  Wordmark „Alma ADOS": dlaždica so znakom + text. „Alma" vo farbe textu, „ADOS" v accent farbe,
-  Inter 600, letter-spacing −0.01em, medzera 9 px pri 26 px dlaždici.
+  "Alma ADOS" wordmark: tile with the mark + text. "Alma" in text color, "ADOS" in accent color,
+  Inter 600, letter-spacing −0.01em, 9 px gap at a 26 px tile.
 */
 export function Logo({
   size = "L",
@@ -22,7 +22,7 @@ export function Logo({
 }) {
   const large = size === "L";
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    // Na domovskej stránke logo plynulo vráti na začiatok
+    // On the home page the logo smoothly scrolls back to the top
     if (window.location.pathname !== "/" || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
     scrollToTop();

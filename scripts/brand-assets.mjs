@@ -1,11 +1,11 @@
 /*
-  Generuje značkové assety z jediného zdroja pravdy (src/lib/brand.ts):
+  Generates brand assets from the single source of truth (src/lib/brand.ts):
   - src/app/icon.svg, src/app/favicon.ico (16/32/48), src/app/apple-icon.png (180)
-  - prepis loga a adresy v rastrových mockupoch (public/images/hero-browser-alma.png, dashboard-alma.png; prípona -alma obchádza cache starých exportov)
-  Spustenie: node scripts/brand-assets.mjs
-  Poznámka: mockupy sú exporty z Figmy; namiesto nového exportu sa starý znak prekryje novým
-  a adresný riadok sa prepíše textom z BRAND.conceptUrl. Upravuje súbory na mieste (prekrytie je idempotentné),
-  pôvodné exporty so starým znakom v repozitári zámerne nezostávajú.
+  - rewrites the logo and address in the raster mockups (public/images/hero-browser-alma.png, dashboard-alma.png; the -alma suffix bypasses the cache of old exports)
+  Run: node scripts/brand-assets.mjs
+  Note: the mockups are Figma exports; instead of re-exporting, the old mark is covered with the new one
+  and the address bar is rewritten with the text from BRAND.conceptUrl. Edits the files in place (the overlay is idempotent);
+  the original exports with the old mark are intentionally not kept in the repository.
 */
 import fs from "node:fs";
 import path from "node:path";
@@ -23,7 +23,7 @@ const MARK = {
 const TEAL = "#0d7f81";
 const strokeFor = (size) => (size >= 32 ? 1.75 : size > 16 ? 2 : 2.4);
 
-/* Inter pre text v mockupoch (librsvg číta fonty cez fontconfig) */
+/* Inter for text in mockups (librsvg reads fonts via fontconfig) */
 const fontDir = path.join(ROOT, "src/app/fonts/og");
 const fcConf = path.join(ROOT, ".next-brand-fonts.conf");
 fs.writeFileSync(
@@ -39,7 +39,7 @@ function glyph(size, stroke, color) {
   </g>`;
 }
 
-/* Dlaždica so znakom: strana `size`, zaoblenie 28 %, znak 62 % strany */
+/* Mark tile: side `size`, 28 % corner radius, mark 62 % of the side */
 function tileSvg(size, { radius = Math.round(size * 0.28), stroke = strokeFor(size), glyphRatio = 0.62 } = {}) {
   const g = size * glyphRatio;
   const off = (size - g) / 2;
@@ -51,11 +51,11 @@ function tileSvg(size, { radius = Math.round(size * 0.28), stroke = strokeFor(si
 }
 
 async function icons() {
-  // icon.svg – vektor, prehliadač ho škáluje na 16–32 px → stroke 2
+  // icon.svg: vector, the browser scales it to 16–32 px → stroke 2
   fs.writeFileSync(path.join(ROOT, "src/app/icon.svg"), tileSvg(64, { radius: 18, stroke: 2 }) + "\n");
-  // apple-icon – iOS zaobľuje sám, dlaždica bez vlastného zaoblenia
+  // apple-icon: iOS rounds the corners itself, tile without its own radius
   await sharp(Buffer.from(tileSvg(180, { radius: 0, stroke: 1.75 }))).png().toFile(path.join(ROOT, "src/app/apple-icon.png"));
-  // favicon.ico – PNG obrázky 16/32/48 v ICO kontajneri, hrúbka ťahu podľa veľkosti
+  // favicon.ico: PNG images 16/32/48 in an ICO container, stroke width by size
   const sizes = [16, 32, 48];
   const pngs = await Promise.all(
     sizes.map((s) => sharp(Buffer.from(tileSvg(s, { stroke: strokeFor(s) })), { density: 384 }).resize(s, s).png().toBuffer()),
@@ -80,8 +80,8 @@ async function icons() {
   console.log("icons: icon.svg, favicon.ico, apple-icon.png");
 }
 
-/* Mockupy: prekryť starý znak novou dlaždicou a prepísať texty (adresný riadok, názov v hlavičke).
-   Súradnice sú v pixeloch originálu; farby textu a pozadia sa berú z obrázka. */
+/* Mockups: cover the old mark with the new tile and rewrite texts (address bar, name in the header).
+   Coordinates are in pixels of the original; text and background colors are sampled from the image. */
 const MOCKUPS = [
   {
     file: "hero-browser-alma.png", // 2080 × 1410

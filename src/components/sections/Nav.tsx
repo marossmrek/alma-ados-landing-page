@@ -23,14 +23,14 @@ export function Nav() {
 
   useGSAP(
     () => {
-      // Kompaktný variant po scrolle > 80 px
+      // Compact variant after scrolling > 80 px
       ScrollTrigger.create({
         start: 80,
         end: "max",
         onToggle: (self) => setCompact(self.isActive),
       });
 
-      // Progress linka (scroll celej stránky)
+      // Progress bar (whole-page scroll)
       gsap.set(progressRef.current, { scaleX: 0, transformOrigin: "left center" });
       ScrollTrigger.create({
         start: 0,
@@ -40,7 +40,7 @@ export function Nav() {
         },
       });
 
-      // Aktívna kotva podľa sekcie vo viewporte
+      // Active anchor by the section in the viewport
       SECTION_IDS.forEach((id) => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -48,7 +48,7 @@ export function Nav() {
           trigger: el,
           start: "top 45%",
           end: "bottom 45%",
-          // Prepočítať až po pinoch sekcií (pin-spacer posúva všetko pod sebou)
+          // Recalculate only after the section pins (the pin-spacer shifts everything below it)
           refreshPriority: -1,
           onToggle: (self) => {
             if (self.isActive) setActive(id);
@@ -59,7 +59,7 @@ export function Nav() {
     { scope: headerRef },
   );
 
-  // Zamknutie scrollu + Escape pre mobilné menu
+  // Scroll lock + Escape for the mobile menu
   useEffect(() => {
     if (!menuOpen) return;
     const prev = document.body.style.overflow;
@@ -104,13 +104,13 @@ export function Nav() {
 
         <div className="hidden items-center gap-4 lg:flex">
           {!compact && <Badge variant="status">Vo vývoji · 2027</Badge>}
-          <Button href="/#kontakt" focusTarget="#pilot-form [name='meno']" size="M" arrow={compact}>
+          <Button href="/#kontakt" focusTarget="#pilot-form [name='name']" size="M" arrow={compact}>
             Zapojiť sa do pilotu
           </Button>
         </div>
 
         <div className="flex items-center gap-3 lg:hidden">
-          <Button href="/#kontakt" focusTarget="#pilot-form [name='meno']" size="M">
+          <Button href="/#kontakt" focusTarget="#pilot-form [name='name']" size="M">
             Zapojiť sa
           </Button>
           <button
@@ -136,7 +136,7 @@ export function Nav() {
         )}
       />
 
-      {/* Mobilné menu – overlay podľa 🧪 Stavy · navigácia */}
+      {/* Mobile menu: overlay per Figma "🧪 Stavy · navigácia" */}
       <div
         id="mobile-menu"
         role="dialog"
@@ -201,7 +201,7 @@ export function Nav() {
             <Badge variant="status">Vo vývoji · Plánované spustenie 2027</Badge>
             <Button
               href="/#kontakt"
-              focusTarget="#pilot-form [name='meno']"
+              focusTarget="#pilot-form [name='name']"
               arrow
               className="w-full"
               onClick={() => setMenuOpen(false)}

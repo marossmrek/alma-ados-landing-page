@@ -12,8 +12,8 @@ import { DecorRings } from "@/components/ui/DecorRings";
 const TRANSCRIPT =
   "„Pacient bez teploty, TK 135/85, rana na pravom predkolení preväzovaná podľa plánu, bez známok infekcie. Inzulín podaný…“";
 
-const TYPING = 3; // prepis sa píše 3 s (celá simulácia ~6 s)
-const RECORDING_LENGTH = 14; // dĺžka „nahrávky" na časomiere (Figma 00:14)
+const TYPING = 3; // transcript types out over 3 s (whole simulation ~6 s)
+const RECORDING_LENGTH = 14; // length of the "recording" on the timer (Figma 00:14)
 
 const ROWS = [
   { label: "Krvný tlak", value: "135/85 mmHg" },
@@ -22,7 +22,7 @@ const ROWS = [
   { label: "Inzulín", value: "podaný" },
 ];
 
-/* Výšky stĺpcov waveformu 1:1 z Figmy (60 stĺpcov). Prehraná časť je accent, zvyšok border/dark. */
+/* Waveform bar heights 1:1 from Figma (60 bars). Played part is accent, the rest border/dark. */
 const WAVE = [8, 14, 22, 30, 18, 40, 26, 12, 34, 20, 44, 28, 16, 36, 24, 10, 30, 42, 20, 14, 26, 38, 18, 8, 22, 32, 16, 40, 24, 12, 28, 20, 36, 14, 8, 30, 22, 44, 18, 26, 12, 34, 20, 8, 16, 28, 38, 22, 10, 30, 18, 24, 40, 14, 26, 8, 20, 32, 16, 12];
 
 type Status = "idle" | "playing" | "done";
@@ -40,7 +40,7 @@ function PlayIcon() {
   );
 }
 
-export function AiDokumentacia() {
+export function AiDocumentation() {
   const scope = useRef<HTMLDivElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const statusRef = useRef<Status>("idle");
@@ -55,7 +55,7 @@ export function AiDokumentacia() {
   const setTranscript = (chars: number) =>
     q(".sim-transcript").forEach((el) => (el.textContent = TRANSCRIPT.slice(0, chars)));
 
-  /* Waveform podľa priebehu: stĺpce po „playhead" sú accent, okolo playheadu sa hýbu */
+  /* Waveform by progress: bars up to the "playhead" are accent, bars around the playhead wiggle */
   const lastHeadRef = useRef(-1);
   const setWave = (progress: number, live = true) => {
     const bars = q(".sim-bar");
@@ -89,7 +89,7 @@ export function AiDokumentacia() {
     gsap.set(q(".sim-arrow, .sim-draft"), { opacity: 0.35 });
     gsap.set(q(".sim-placeholder"), { autoAlpha: 1 });
     gsap.set(q(".sim-value"), { autoAlpha: 0, y: 8 });
-    // upozornenie ostáva v layoute (rezervované miesto), len je neviditeľné – karta pri jeho zobrazení „nepodskočí"
+    // the warning stays in the layout (reserved space), only invisible, so the card does not jump when it appears
     gsap.set(q(".sim-warning"), { autoAlpha: 0, scale: 0.96, boxShadow: "0 0 0 0 rgba(180,87,10,0)" });
     gsap.set(q(".sim-confirm"), { scale: 1 });
   };
@@ -113,9 +113,9 @@ export function AiDokumentacia() {
     if (statusRef.current === "playing") setStatus("done");
   };
 
-  /* Druhá časť: AI skladá záznam (riadky po 120 ms), upozornenie, pulz tlačidla */
+  /* Second part: AI assembles the record (rows every 120 ms), warning, button pulse */
   const addDraftPart = (tl: gsap.core.Timeline, t1: number) => {
-    const t2 = t1 + 1.5; // upozornenie krátko po poslednom riadku
+    const t2 = t1 + 1.5; // warning shortly after the last row
     tl.to(q(".sim-arrow, .sim-draft"), { opacity: 1, duration: 0.4 }, t1)
       .to(q(".sim-placeholder"), { autoAlpha: 0, duration: 0.15, stagger: 0.12 }, t1 + 0.2)
       .to(q(".sim-value"), { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out", stagger: 0.12 }, t1 + 0.25)
@@ -134,7 +134,7 @@ export function AiDokumentacia() {
     () => {
       setInitial();
       const demo = scope.current?.querySelector(".sim-demo") ?? scope.current;
-      // Auto-spustenie (raz), keď demo príde do viewportu
+      // Auto-start (once) when the demo enters the viewport
       ScrollTrigger.create({
         trigger: demo,
         start: "top 72%",
@@ -151,13 +151,13 @@ export function AiDokumentacia() {
     setStatus("playing");
 
     if (prefersReducedMotion()) {
-      // Bez animácie – rovno finálna snímka
+      // No animation, jump straight to the final frame
       setFinal(RECORDING_LENGTH);
       setStatus("done");
       return;
     }
 
-    // Prepis 3 s, časomiera 0 → 00:14, waveform podľa priebehu, potom skladanie záznamu
+    // Transcript 3 s, timer 0 → 00:14, waveform by progress, then record assembly
     const state = { p: 0 };
     const tl = gsap.timeline({ onComplete: () => setStatus("done") });
     tl.to(q(".sim-wave"), { opacity: 1, duration: 0.3 }, 0)
@@ -192,7 +192,7 @@ export function AiDokumentacia() {
       aria-label="Asistovaná dokumentácia"
       className="relative overflow-hidden bg-bg-dark py-12 lg:py-32"
     >
-      {/* Decor – sústredné kruhy vpravo hore (Figma AI › Decor), pomaly sa otáčajú */}
+      {/* Decor: concentric rings top right (Figma AI › Decor), slowly rotating */}
       <DecorRings
         rings={[
           { size: 720, left: "calc(50% + 320px)", top: "-160px", opacity: 0.7 },
@@ -224,7 +224,7 @@ export function AiDokumentacia() {
 
         {/* Demo */}
         <div className="sim-demo gsap-reveal flex w-full flex-col items-stretch gap-4 lg:flex-row lg:items-center lg:justify-center lg:gap-6">
-          {/* Nahrávka */}
+          {/* Recording */}
           <div className="flex w-full flex-col gap-5 rounded-16 border border-border-dark bg-bg-dark-elevated p-5 sm:p-6 lg:w-[520px] lg:shrink-0">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
@@ -278,7 +278,7 @@ export function AiDokumentacia() {
             </div>
           </div>
 
-          {/* Šípka */}
+          {/* Arrow */}
           <div className="sim-arrow flex shrink-0 flex-col items-center gap-2 self-center" aria-hidden="true">
             <span className="flex size-12 items-center justify-center rounded-full bg-accent text-text-inverse">
               <Icon name="arrow-down" className="size-[22px] lg:hidden" />
@@ -287,7 +287,7 @@ export function AiDokumentacia() {
             <p className="whitespace-nowrap text-label-s text-text-inverse-muted">AI štruktúruje</p>
           </div>
 
-          {/* Návrh záznamu */}
+          {/* Draft record */}
           <div className="sim-draft flex w-full flex-col items-start gap-5 rounded-16 border border-border-dark bg-bg-dark-elevated p-5 sm:p-6 lg:w-[560px] lg:shrink-0">
             <div className="flex w-full items-start justify-between gap-3">
               <div className="flex flex-col gap-0.5">

@@ -14,7 +14,7 @@ const GAIN = [
   "Priamu komunikáciu s tímom, ktorý produkt vyvíja",
 ];
 
-export function Ocakavania() {
+export function Expectations() {
   return (
     <section aria-label="Pilotný program: očakávania" className="pb-12 pt-4 lg:pb-32 lg:pt-8">
       <div className="container-page grid gap-4 lg:grid-cols-2 lg:gap-6">

@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 
-/* Jeden deň sestry – štyri zastávky. Prvé tri na telefóne v teréne, štvrtá na webe v kancelárii. */
+/* One day of a nurse in four stops. The first three on the phone in the field, the fourth on the web in the office. */
 const STOPS = [
   {
     time: "07:30",
@@ -68,7 +68,7 @@ const FEATURES = [
   "Offline režim",
 ];
 
-/* Zariadenie: telefón s tromi obrazovkami (crossfade), pri poslednej zastávke sa vymení za web */
+/* Device: phone with three screens (crossfade), swapped for the web view at the last stop */
 function DeviceStack({
   active,
   phoneClassName,
@@ -111,7 +111,7 @@ function DeviceStack({
   );
 }
 
-/* Kompaktná časová os (mobil): štyri časy v rade, aktívny zvýraznený */
+/* Compact timeline (mobile): four times in a row, the active one highlighted */
 function TimeRow({ active }: { active: number }) {
   return (
     <ol className="flex w-full items-center justify-between gap-2" aria-hidden="true">
@@ -152,7 +152,7 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
           <span className={isActive ? "text-text-primary" : "text-text-secondary"}>{s.title}</span>
         </h3>
         <p className={cx("text-text-secondary", compact ? "text-body-s" : "text-body-m")}>{s.text}</p>
-        {/* Kroky sa rozbalia len pri aktívnej zastávke – pripnutý panel tak zostane nízky */}
+        {/* Steps expand only for the active stop, so the pinned panel stays short */}
         <div
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
           style={{ gridTemplateRows: isActive ? "1fr" : "0fr", opacity: isActive ? 1 : 0 }}
@@ -175,7 +175,7 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
   );
 }
 
-export function PreSestry() {
+export function FieldDay() {
   const panelRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
@@ -190,7 +190,7 @@ export function PreSestry() {
       if (!panel) return;
       const mm = gsap.matchMedia();
 
-      // Pozn.: callback matchMedia beží len keď aspoň jedna podmienka platí – preto aj „mobile"
+      // Note: the matchMedia callback runs only when at least one condition matches, hence the "mobile" one too
       mm.add(
         {
           desktop: "(min-width: 1024px)",
@@ -207,7 +207,7 @@ export function PreSestry() {
           if (!screens.length || !phone || !web) return;
 
           if (reduce) {
-            // Bez pinu a bez animácie – prvá obrazovka, zastávky pod sebou
+            // No pin and no animation: first screen, stops stacked below each other
             gsap.set(screens, { autoAlpha: 0 });
             gsap.set(screens[0], { autoAlpha: 1 });
             gsap.set(web, { autoAlpha: 0 });
@@ -221,7 +221,7 @@ export function PreSestry() {
           gsap.set(web, { autoAlpha: 0, y: 16, scale: 0.98 });
           if (progress) gsap.set(progress, { scaleY: 0, transformOrigin: "top center" });
 
-          // Pin panelu (desktop aj mobil) + scrub: obrazovky, výmena zariadenia a priebeh dňa
+          // Pin the panel (desktop and mobile) + scrub: screens, device swap and day progress
           const tl = gsap.timeline({
             defaults: { ease: "sine.inOut" },
             scrollTrigger: {
@@ -246,7 +246,7 @@ export function PreSestry() {
             },
           });
 
-          // Časy prepnutia zodpovedajú prahom 0,2 / 0,5 / 0,8 z celkovej dĺžky 2,4
+          // Switch times match the 0.2 / 0.5 / 0.8 thresholds of the total 2.4 duration
           tl.to(screens[0], { autoAlpha: 0, y: -12, duration: 0.3 }, 0.35)
             .to(screens[1], { autoAlpha: 1, y: 0, duration: 0.3 }, 0.35)
             .to(screens[1], { autoAlpha: 0, y: -12, duration: 0.3 }, 1.05)
@@ -270,13 +270,13 @@ export function PreSestry() {
           lead="Takto by vyzeral bežný deň s Alma ADOS: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
         />
 
-        {/* Scrolly panel – blokový wrapper, aby pin-spacer nebol flex položkou */}
+        {/* Scrolly panel: block wrapper so the pin-spacer is not a flex item */}
         <div className="w-full">
           <div
             ref={panelRef}
             className="w-full rounded-[20px] bg-bg-muted p-4 sm:p-6 lg:rounded-[24px] lg:px-14 lg:py-10"
           >
-            {/* Desktop: pripnuté zariadenie vľavo, časová os so zastávkami vpravo */}
+            {/* Desktop: pinned device on the left, timeline with stops on the right */}
             <div className="scrolly-desktop hidden lg:flex lg:flex-row lg:items-center lg:gap-14">
               <div className="flex w-[460px] shrink-0 flex-col items-center gap-4">
                 <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
@@ -297,7 +297,7 @@ export function PreSestry() {
               </div>
 
               <ol className="relative flex min-w-0 flex-1 flex-col gap-2.5">
-                {/* Zvislá os a jej priebeh */}
+                {/* Vertical axis and its progress */}
                 <span aria-hidden="true" className="absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-border-default" />
                 <span aria-hidden="true" className="day-progress absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-accent" />
                 {STOPS.map((s, i) => {
@@ -329,7 +329,7 @@ export function PreSestry() {
               </ol>
             </div>
 
-            {/* Mobil: pripnuté zariadenie hore, časová os a jedna zastávka pod ním (pri reduced motion pod sebou) */}
+            {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
             <div className="scrolly-mobile flex flex-col items-center gap-3 lg:hidden">
               <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
               <div className="flex min-h-[400px] w-full max-w-[360px] items-center">
@@ -367,7 +367,7 @@ export function PreSestry() {
           </div>
         </div>
 
-        {/* Navrhované funkcie */}
+        {/* Proposed features */}
         <div className="flex flex-col items-start gap-5 lg:gap-6">
           <Badge variant="status" className="gsap-reveal">
             Navrhované funkcie · vo vývoji

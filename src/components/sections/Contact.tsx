@@ -18,14 +18,14 @@ const FACTS: { icon: IconName; text: string; small?: boolean }[] = [
   },
 ];
 
-export function Kontakt() {
+export function Contact() {
   return (
     <section
       id="kontakt"
       aria-label="Kontakt: pilotný program"
       className="relative overflow-hidden bg-bg-dark py-12 lg:py-32"
     >
-      {/* Decor – sústredné kruhy vľavo dole (Figma Kontakt › Decor), pomaly sa otáčajú */}
+      {/* Decor: concentric rings bottom left (Figma Kontakt › Decor), slowly rotating */}
       <DecorRings
         spin
         rings={[

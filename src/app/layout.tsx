@@ -6,8 +6,8 @@ import { BackToTop } from "@/components/BackToTop";
 import { Preloader } from "@/components/Preloader";
 
 /*
-  Inter Variable (wght 400–600) zúžený na znaky pre slovenčinu (latin, latin-ext, interpunkcia, šípky):
-  jeden súbor ~71 KB namiesto dvoch Google subsetov (132 KB). Zdroj: rsms/inter v4.1, subset cez fonttools.
+  Inter Variable (wght 400–600) subset to the glyphs needed for Slovak (latin, latin-ext, punctuation, arrows):
+  one ~71 KB file instead of two Google subsets (132 KB). Source: rsms/inter v4.1, subset via fonttools.
 */
 const inter = localFont({
   src: "./fonts/InterVariable-sk.woff2",
@@ -20,7 +20,7 @@ const inter = localFont({
 const DESCRIPTION =
   "Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.";
 
-/* Absolútna adresa webu pre OG/Twitter obrázky: NEXT_PUBLIC_SITE_URL, inak adresa z Vercelu */
+/* Absolute site URL for OG/Twitter images: NEXT_PUBLIC_SITE_URL, otherwise the Vercel address */
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 

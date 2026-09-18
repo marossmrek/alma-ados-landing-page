@@ -2,13 +2,13 @@ import { cx } from "@/lib/cx";
 import { BRAND_MARK_PATHS, markStrokeWidth } from "@/lib/brand";
 
 /*
-  Znak Alma: dve dlane držiace človeka.
-  tile  = biely znak na teal dlaždici (primárna podoba)
-  soft  = znak #0A6466 na #E3F3F2
-  dark  = znak #5FC0C1 na #141B24
-  line  = samotný znak, farba cez currentColor (bez dlaždice)
-  size  = strana dlaždice v px; pri „line" veľkosť znaku. Zaoblenie ≈ 28 % strany.
-  Znak sa nikdy nedeformuje, neotáča a nemá tieň ani gradient.
+  Alma mark: two palms holding a person.
+  tile  = white mark on a teal tile (primary form)
+  soft  = #0A6466 mark on #E3F3F2
+  dark  = #5FC0C1 mark on #141B24
+  line  = the bare mark, colored via currentColor (no tile)
+  size  = tile side in px; for "line" the mark size. Corner radius ≈ 28 % of the side.
+  The mark is never distorted or rotated and has no shadow or gradient.
 */
 export type BrandMarkVariant = "tile" | "soft" | "dark" | "line";
 
@@ -58,7 +58,7 @@ export function BrandMark({
   className?: string;
 }) {
   if (variant === "line") return <BrandMarkGlyph size={size} className={className} />;
-  // znak zaberá ~62 % dlaždice (26 px dlaždica → 16 px znak)
+  // the mark takes ~62 % of the tile (26 px tile → 16 px mark)
   const glyph = Math.round(size * 0.62);
   return (
     <span

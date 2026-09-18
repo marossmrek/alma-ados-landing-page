@@ -20,18 +20,18 @@ function markDone() {
 }
 
 /*
-  Preloader: znak Alma (dve dlane a človek) sa nakreslí na dlaždici, objaví sa wordmark, dole beží progress linka,
-  overlay sa vytratí (fade-out) a až potom štartuje hero intro (HeroMotion počúva PRELOADER_DONE_EVENT).
-  Zobrazí sa pri každom načítaní domovskej stránky (desktop aj mobil); pri prefers-reduced-motion sa preskočí.
+  Preloader: the Alma mark (two palms and a person) is drawn on the tile, the wordmark appears, a progress bar runs at the bottom,
+  the overlay fades out and only then does the hero intro start (HeroMotion listens for PRELOADER_DONE_EVENT).
+  Shown on every load of the home page (desktop and mobile); skipped with prefers-reduced-motion.
 */
 export function Preloader() {
   const pathname = usePathname();
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(true);
 
-  // Rozhodnutie pred prvým vykreslením na klientovi – bez bliknutia
+  // Decide before the first client render, so there is no flash
   useLayoutEffect(() => {
-    // Len domovská stránka, viditeľný tab, bez reduced motion
+    // Home page only, visible tab, no reduced motion
     const skip = pathname !== "/" || prefersReducedMotion() || document.visibilityState !== "visible";
     if (skip) {
       setActive(false);
@@ -59,7 +59,7 @@ export function Preloader() {
       };
 
       const tl = gsap.timeline({ defaults: { ease: "power2.out" }, onComplete: finish });
-      // Poistka: keby animácia z akéhokoľvek dôvodu nedobehla, preloader sa po 3 s ukončí sám
+      // Safety net: if the animation fails to finish for any reason, the preloader ends itself after 3 s
       let done = false;
       const guard = window.setTimeout(() => {
         if (!done) {
@@ -72,7 +72,7 @@ export function Preloader() {
         window.clearTimeout(guard);
         finish();
       });
-      // Východiskové stavy sú aj v inline štýloch (pred hydratáciou je overlay prázdny, nie „hotový")
+      // Initial states are also set in inline styles (before hydration the overlay is empty, not "finished")
       tl.fromTo(root.querySelector(".pre-tile"), { scale: 0.85, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35 }, 0)
         .to(paths, { strokeDashoffset: 0, duration: 0.5, ease: "sine.inOut", stagger: 0.08 }, 0.1)
         .fromTo(

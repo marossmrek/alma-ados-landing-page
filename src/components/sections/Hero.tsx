@@ -5,9 +5,9 @@ import { PreviewLabel } from "@/components/ui/PreviewLabel";
 import { HeroMotion } from "@/components/sections/HeroMotion";
 
 /*
-  Hero vizuál = dva exporty z Figmy orezané presne na mockup (Browser · Backoffice 1040 × 705,
-  Phone · Sestra 296 × 622, oba 2×). Tiene a zaoblenie sú v CSS, aby pod nimi ostal viditeľný dekor.
-  Percentá sú z rámu 1200 × 718 (desktop) alebo z mobilnej kompozície 1000 × 900 (browser 124 % šírky, mierne presahuje okraje).
+  Hero visual = two Figma exports cropped exactly to the mockup (Browser · Backoffice 1040 × 705,
+  Phone · Sestra 296 × 622, both 2×). Shadows and rounding are in CSS so the decor stays visible underneath.
+  Percentages are relative to the 1200 × 718 frame (desktop) or the 1000 × 900 mobile composition (browser 124 % wide, slightly overflowing the edges).
 */
 function Route({
   d,
@@ -42,9 +42,9 @@ export function Hero() {
   return (
     <section aria-label="Úvod" className="relative overflow-hidden">
       <HeroMotion>
-        {/* Decor – podľa Figmy (Hero › Decor), len dekoratívne */}
+        {/* Decor per Figma (Hero › Decor), purely decorative */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          {/* Bloby ako CSS radiálne gradienty (bez sieťových požiadaviek) – hodnoty z Figma SVG */}
+          {/* Blobs as CSS radial gradients (no network requests), values from the Figma SVG */}
           <span
             data-hero="decor"
             data-hero-blob
@@ -91,14 +91,14 @@ export function Hero() {
               prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.
             </p>
             <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:items-center">
-              <Button href="#kontakt" focusTarget="#pilot-form [name='meno']" arrow>
+              <Button href="#kontakt" focusTarget="#pilot-form [name='name']" arrow>
                 Chcem sa zapojiť do pilotného programu
               </Button>
               <Button href="#produkt" variant="secondary">
                 Pozrieť, ako to funguje
               </Button>
             </div>
-            {/* TODO: „3 – 5" je návrh, upraviť podľa reálnej kapacity */}
+            {/* TODO: "3 – 5" is a proposal, adjust to the real capacity */}
             <p className="max-w-[640px] text-body-s text-text-tertiary">
               Hľadáme 3 až 5 ADOS, ktoré s nami produkt navrhnú a overia v praxi ešte pred spustením.
             </p>

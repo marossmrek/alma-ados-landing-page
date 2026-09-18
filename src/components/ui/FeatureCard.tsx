@@ -15,7 +15,7 @@ export function FeatureCard({
   title: string;
   description: string;
   planned?: boolean;
-  /* „div" pre interaktívnu (role="button") kartu – article nepovoľuje rolu button */
+  /* "div" for an interactive (role="button") card; article does not allow the button role */
   as?: "article" | "div";
   className?: string;
 } & ComponentPropsWithoutRef<"div">) {

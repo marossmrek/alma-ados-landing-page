@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ComponentPropsWithoutRef, MouseEvent } from "react";
 import { handleAnchorClick } from "@/lib/scroll";
 
-/* Odkaz na kotvu, ktorý scrolluje plynulo aj z podstránok */
+/* Anchor link that scrolls smoothly, also when coming from subpages */
 export function AnchorLink({ href, onClick, children, ...rest }: { href: string } & ComponentPropsWithoutRef<"a">) {
   const router = useRouter();
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {

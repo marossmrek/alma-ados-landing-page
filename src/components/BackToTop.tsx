@@ -7,7 +7,7 @@ import { scrollToTop } from "@/lib/scroll";
 import { cx } from "@/lib/cx";
 import { Icon } from "@/components/ui/Icon";
 
-/* Šípka „Späť hore" – zobrazí sa po odscrolovaní cca jednej obrazovky */
+/* "Späť hore" (back to top) arrow, shown after scrolling roughly one viewport */
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
 

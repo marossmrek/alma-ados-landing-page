@@ -28,7 +28,7 @@ export default function OchranaOsobnychUdajovPage() {
               máte práva. Web slúži na predstavenie pripravovaného produktu a na prihlásenie sa do
               pilotného programu.
             </p>
-            {/* TODO: doplniť IČO a sídlo spoločnosti */}
+            {/* TODO: add the company registration number (IČO) and registered office */}
             <p className="text-body-s text-text-tertiary">
               Prevádzkovateľ: {CONTACT.company} · {CONTACT.email} · {CONTACT.phone} · Naposledy
               aktualizované 17. 9. 2026

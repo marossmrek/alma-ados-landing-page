@@ -9,27 +9,27 @@ import { SegmentedGroup } from "@/components/ui/SegmentedOption";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { FormTimestamp } from "@/components/ui/FormTimestamp";
 import { submitPilotForm } from "@/app/actions";
-import { PREFILL_EVENT } from "@/components/sections/Kalkulacka";
+import { PREFILL_EVENT } from "@/components/sections/Calculator";
 
-type Field = "meno" | "ados" | "email" | "telefon" | "pocet-sestier" | "suhlas";
+type Field = "name" | "agency" | "email" | "phone" | "nurse-count" | "consent";
 type Errors = Partial<Record<Field, string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^[+\d][\d\s()/-]{5,24}$/;
 
-/* Rovnaké pravidlá ako na serveri (lib/antispam.ts), len s textami pre ľudí */
+/* Same rules as on the server (lib/antispam.ts), just with human-readable messages */
 function validate(fd: FormData): Errors {
   const errors: Errors = {};
-  const meno = String(fd.get("meno") ?? "").trim();
-  const ados = String(fd.get("ados") ?? "").trim();
+  const name = String(fd.get("name") ?? "").trim();
+  const agency = String(fd.get("agency") ?? "").trim();
   const email = String(fd.get("email") ?? "").trim();
-  const telefon = String(fd.get("telefon") ?? "").trim();
-  if (meno.length < 2) errors.meno = "Zadajte meno a priezvisko.";
-  if (ados.length < 2) errors.ados = "Zadajte názov vašej ADOS.";
+  const phone = String(fd.get("phone") ?? "").trim();
+  if (name.length < 2) errors.name = "Zadajte meno a priezvisko.";
+  if (agency.length < 2) errors.agency = "Zadajte názov vašej ADOS.";
   if (!EMAIL_RE.test(email)) errors.email = "Zadajte platný e-mail, napríklad meno@ados.sk.";
-  if (telefon && !PHONE_RE.test(telefon)) errors.telefon = "Telefón môže obsahovať len číslice, medzery a znak +.";
-  if (!fd.get("pocet-sestier")) errors["pocet-sestier"] = "Vyberte približný počet sestier.";
-  if (fd.get("suhlas") !== "on") errors.suhlas = "Bez súhlasu vás nemôžeme kontaktovať.";
+  if (phone && !PHONE_RE.test(phone)) errors.phone = "Telefón môže obsahovať len číslice, medzery a znak +.";
+  if (!fd.get("nurse-count")) errors["nurse-count"] = "Vyberte približný počet sestier.";
+  if (fd.get("consent") !== "on") errors.consent = "Bez súhlasu vás nemôžeme kontaktovať.";
   return errors;
 }
 
@@ -47,17 +47,17 @@ export function PilotForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [summary, setSummary] = useState("");
 
-  // Kalkulačka pošle odhad počtu sestier; pole je nekontrolované, preto ho nastavíme priamo
+  // The calculator sends the estimated nurse count; the field is uncontrolled, so set it directly
   useEffect(() => {
     const onPrefill = (e: Event) => {
       const value = (e as CustomEvent<string>).detail;
-      const input = formRef.current?.querySelector<HTMLInputElement>(`input[name="pocet-sestier"][value="${value}"]`);
+      const input = formRef.current?.querySelector<HTMLInputElement>(`input[name="nurse-count"][value="${value}"]`);
       if (!input || input.checked) return;
       input.checked = true;
       setErrors((err) => {
-        if (!err["pocet-sestier"]) return err;
+        if (!err["nurse-count"]) return err;
         const next = { ...err };
-        delete next["pocet-sestier"];
+        delete next["nurse-count"];
         return next;
       });
     };
@@ -81,12 +81,12 @@ export function PilotForm() {
     const keys = Object.keys(found) as Field[];
     if (keys.length === 0) {
       setSummary("");
-      return; // server action beží
+      return; // server action runs
     }
     e.preventDefault();
     const n = keys.length;
-    const polia = n === 1 ? "jedno pole" : n < 5 ? `${n} polia` : `${n} polí`;
-    setSummary(`Skontrolujte, prosím, ${polia}.`);
+    const fieldsLabel = n === 1 ? "jedno pole" : n < 5 ? `${n} polia` : `${n} polí`;
+    setSummary(`Skontrolujte, prosím, ${fieldsLabel}.`);
     const first = form.querySelector<HTMLElement>(`[name="${keys[0]}"]`);
     first?.focus();
     first?.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -102,7 +102,7 @@ export function PilotForm() {
       aria-labelledby="pilot-form-title"
       className="gsap-reveal relative flex w-full max-w-[544px] flex-col gap-5 rounded-[20px] bg-bg-surface p-6 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.25)] sm:p-8 lg:rounded-[24px] lg:p-10"
     >
-      {/* Honeypot proti spamu – ľudia ho nevidia */}
+      {/* Anti-spam honeypot, invisible to humans */}
       <div className="absolute -left-[9999px] top-0 h-px w-px overflow-hidden" aria-hidden="true">
         <label>
           Web
@@ -127,21 +127,21 @@ export function PilotForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
           label="Meno a priezvisko"
-          name="meno"
+          name="name"
           autoComplete="name"
           placeholder="Mária Kováčová"
           required
-          error={errors.meno}
-          onChange={() => clear("meno")}
+          error={errors.name}
+          onChange={() => clear("name")}
         />
         <Input
           label="Názov ADOS"
-          name="ados"
+          name="agency"
           autoComplete="organization"
           placeholder="ADOS Starostlivosť, s.r.o."
           required
-          error={errors.ados}
-          onChange={() => clear("ados")}
+          error={errors.agency}
+          onChange={() => clear("agency")}
         />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -157,22 +157,22 @@ export function PilotForm() {
         />
         <Input
           label="Telefón"
-          name="telefon"
+          name="phone"
           type="tel"
           autoComplete="tel"
           placeholder="+421 9xx xxx xxx"
-          error={errors.telefon}
-          onChange={() => clear("telefon")}
+          error={errors.phone}
+          onChange={() => clear("phone")}
         />
       </div>
 
       <SegmentedGroup
         label="Počet sestier"
-        name="pocet-sestier"
+        name="nurse-count"
         required
         help="Stačí odhad."
-        error={errors["pocet-sestier"]}
-        onChange={() => clear("pocet-sestier")}
+        error={errors["nurse-count"]}
+        onChange={() => clear("nurse-count")}
         options={[
           { value: "1-3", label: "1 až 3" },
           { value: "4-8", label: "4 až 8" },
@@ -182,16 +182,16 @@ export function PilotForm() {
 
       <Textarea
         label="Čo vám dnes pri práci zaberá najviac času? (nepovinné)"
-        name="sprava"
+        name="message"
         placeholder="Napr. prepisovanie dokumentácie, príprava podkladov pre poisťovne, plánovanie trás…"
       />
 
-      {/* TODO: finálne znenie súhlasu potvrdí právnik */}
+      {/* TODO: final consent wording to be confirmed by a lawyer */}
       <Checkbox
-        name="suhlas"
+        name="consent"
         required
-        error={errors.suhlas}
-        onChange={() => clear("suhlas")}
+        error={errors.consent}
+        onChange={() => clear("consent")}
         label={
           <>
             Súhlasím so spracovaním osobných údajov na účely kontaktovania ohľadom pilotného programu.

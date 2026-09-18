@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /*
-  Design tokens – 1:1 z Figma premenných.
-  Kolekcia „Web": bg/*, text/*, border/*, accent/*, status/*, map/*
-  Kolekcia „Spacing": space/4–128, radius/*
-  Tailwind 4: každá premenná v @theme je zároveň CSS custom property na :root
-  a generuje utility (bg-bg-page, text-text-primary, border-border-default,
+  Design tokens, 1:1 from Figma variables.
+  Collection "Web": bg/*, text/*, border/*, accent/*, status/*, map/*
+  Collection "Spacing": space/4–128, radius/*
+  Tailwind 4: every variable in @theme is also a CSS custom property on :root
+  and generates utilities (bg-bg-page, text-text-primary, border-border-default,
   bg-accent, rounded-12 …).
 */
 @theme {
@@ -22,8 +22,8 @@
   --color-text-primary: #141b24;
   --color-text-secondary: #5c6674;
   /*
-    text/tertiary vo Figme = #8a94a2 (2.9:1 na svetlom pozadí). Na svetlom používame #646e7c (4.9:1),
-    na tmavom pozadí ostáva pôvodná hodnota (5.7:1) ako text-tertiary-on-dark.
+    text/tertiary in Figma = #8a94a2 (2.9:1 on a light background). On light we use #646e7c (4.9:1),
+    on a dark background the original value stays (5.7:1) as text-tertiary-on-dark.
   */
   --color-text-tertiary: #646e7c;
   --color-text-tertiary-on-dark: #8a94a2;
@@ -36,20 +36,20 @@
   --color-border-dark: #2c333e;
 
   /*
-    accent/* (alias na Farby produktu)
-    accent/default vo Figme = #0f8b8d. Biely text na ňom má kontrast 4.11:1 (< 4.5:1 AA),
-    preto je web-hodnota stmavená na #0d7f81 (4.8:1) – vizuálne takmer nerozlíšiteľné,
-    mockupy (PNG) ostávajú s pôvodnou farbou. Hover accent/strong ostáva tmavší.
+    accent/* (alias of the product colors)
+    accent/default in Figma = #0f8b8d. White text on it has 4.11:1 contrast (< 4.5:1 AA),
+    so the web value is darkened to #0d7f81 (4.8:1), visually almost indistinguishable;
+    mockups (PNG) keep the original color. Hover accent/strong stays darker.
   */
   --color-accent: #0d7f81;
   --color-accent-strong: #0b6e70;
   --color-accent-text: #0a6466;
   --color-accent-soft: #e3f3f2;
-  --color-accent-on-dark: #3fa9ab; /* text v accent farbe na bg/dark (wordmark, čísla krokov) – 6.3:1 */
+  --color-accent-on-dark: #3fa9ab; /* accent-colored text on bg/dark (wordmark, step numbers), 6.3:1 */
 
-  /* status/* – warning vo Figme #b4570a (4.33:1 na warning-soft) → #aa5209 kvôli 4.5:1 */
+  /* status/*: warning in Figma #b4570a (4.33:1 on warning-soft) → #aa5209 to reach 4.5:1 */
   --color-status-warning: #aa5209;
-  --color-status-warning-on-dark: #d97b2b; /* svetlejší odtieň pre text na bg/dark (NÁHĽAD) */
+  --color-status-warning-on-dark: #d97b2b; /* lighter shade for text on bg/dark (the „NÁHĽAD" badge) */
   --color-status-warning-soft: #fdf0de;
   --color-status-success: #3a8a2e;
   --color-status-success-soft: #eaf5e6;
@@ -70,9 +70,9 @@
   --radius-full: 999px;
 
   /*
-    space/* – Figma škála 4/8/12/16/20/24/32/40/48/64/80/96/128 je zhodná
-    s predvolenou Tailwind škálou (1 = 4px → p-6 = space/24, gap-8 = space/32 …).
-    Sémantické spacingy sekcií:
+    space/*: the Figma scale 4/8/12/16/20/24/32/40/48/64/80/96/128 matches
+    the default Tailwind scale (1 = 4px → p-6 = space/24, gap-8 = space/32 …).
+    Semantic section spacings:
   */
   --spacing-section: 96px;
   --spacing-section-sm: 48px;
@@ -101,7 +101,7 @@
   }
 }
 
-/* Spacing tokeny aj ako samostatné premenné (space/4–128) */
+/* Spacing tokens also as standalone variables (space/4–128) */
 :root {
   --space-4: 4px;
   --space-8: 8px;
@@ -119,9 +119,9 @@
 }
 
 /*
-  Textové štýly – Inter (letterSpacing vo Figme je v %, prevedené na em).
-  Škála zúžená na 8 rolí: 12 caption/eyebrow · 14 body-s/label-s · 16 body-m/label-m · 18 body-l ·
-  20 h4/lead · 28 h3 · 44 h2 · 64 display (+ mobilné varianty 32/40).
+  Text styles, Inter (letterSpacing in Figma is in %, converted to em).
+  Scale narrowed to 8 roles: 12 caption/eyebrow · 14 body-s/label-s · 16 body-m/label-m · 18 body-l ·
+  20 h4/lead · 28 h3 · 44 h2 · 64 display (+ mobile variants 32/40).
 */
 @utility text-display {
   font-size: 64px;
@@ -202,7 +202,7 @@
   font-weight: 400;
 }
 
-/* Fokus – Button má vo Figme len Default/Hover/Disabled, focus ring = accent */
+/* Focus: Button only has Default/Hover/Disabled in Figma, focus ring = accent */
 @utility focus-ring {
   outline: none;
   &:focus-visible {
@@ -211,7 +211,7 @@
   }
 }
 
-/* Kontajner 1200 px (1440 − 2 × 120) */
+/* Container 1200 px (1440 − 2 × 120) */
 @utility container-page {
   width: 100%;
   max-width: 1200px;
@@ -226,16 +226,16 @@
 }
 
 html {
-  /* Plynulý scroll rieši GSAP ScrollToPlugin (lib/scroll.ts); natívne scroll-behavior by sa s ním bil */
+  /* Smooth scroll is handled by GSAP ScrollToPlugin (lib/scroll.ts); native scroll-behavior would fight it */
   scroll-padding-top: 80px;
-  /* Poistka proti vodorovnému scrollu (dekor, pripnuté panely); clip nevytvára scroll kontajner, sticky nav funguje */
+  /* Guard against horizontal scroll (decor, pinned panels); clip does not create a scroll container, so sticky nav keeps working */
   overflow-x: clip;
-  /* Vlastný scrollbar – Firefox */
+  /* Custom scrollbar: Firefox */
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-default) var(--color-bg-page);
 }
 
-/* Vlastný scrollbar – WebKit (Chrome, Safari, Edge) */
+/* Custom scrollbar: WebKit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -266,7 +266,7 @@ html {
   }
 }
 
-/* Typografia: vyvážené zalomenie nadpisov (bez sirôt), krajšie zalomenie odsekov */
+/* Typography: balanced heading wrapping (no orphans), nicer paragraph wrapping */
 h1,
 h2,
 h3 {
@@ -286,12 +286,12 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Elementy animované GSAP fade-up – bez JS zostanú viditeľné */
+/* Elements animated by the GSAP fade-up stay visible without JS */
 .gsap-reveal {
   will-change: transform, opacity;
 }
 
-/* Posuvník kalkulačky: dráha s vyplnenou časťou (--range-pct), okrúhly palec v accent farbe */
+/* Calculator slider: track with a filled part (--range-pct), round thumb in the accent color */
 .range-accent {
   -webkit-appearance: none;
   appearance: none;
@@ -341,7 +341,7 @@ body {
   transform: scale(1.1);
 }
 
-/* Spotlight v sekcii Pre ADOS: obdĺžniky a tooltip sa medzi zastávkami plynulo presunú */
+/* Spotlight in the office section (OfficeDay, formerly Pre ADOS): rectangles and tooltip move smoothly between stops */
 .office-rect {
   transition:
     x 0.5s ease,

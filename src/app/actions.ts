@@ -6,27 +6,27 @@ import { sendPilotRequest } from "@/lib/mail";
 import { rateLimited, tooFastOrStale, validatePayload } from "@/lib/antispam";
 
 /*
-  Server action formulára pilotného programu.
-  Odošle e-mail na CONTACT_TO (predvolene maros.smrek@thunderstruck.studio) + potvrdenie záujemcovi
-  a presmeruje na success stav. Spam sa ticho zahodí (tiež presmeruje, aby robot nič nezistil).
+  Server action for the pilot program form.
+  Sends an e-mail to CONTACT_TO (default maros.smrek@thunderstruck.studio) plus a confirmation to the applicant,
+  then redirects to the success state. Spam is silently dropped (also redirects, so a bot learns nothing).
 */
 export async function submitPilotForm(formData: FormData) {
   const payload = {
-    meno: String(formData.get("meno") ?? "").trim(),
-    ados: String(formData.get("ados") ?? "").trim(),
+    name: String(formData.get("name") ?? "").trim(),
+    agency: String(formData.get("agency") ?? "").trim(),
     email: String(formData.get("email") ?? "").trim(),
-    telefon: String(formData.get("telefon") ?? "").trim(),
-    pocetSestier: String(formData.get("pocet-sestier") ?? ""),
-    sprava: String(formData.get("sprava") ?? "").trim(),
-    suhlas: formData.get("suhlas") === "on",
-    // honeypot – skryté pole, ktoré vyplnia len roboty
+    phone: String(formData.get("phone") ?? "").trim(),
+    nurseCount: String(formData.get("nurse-count") ?? ""),
+    message: String(formData.get("message") ?? "").trim(),
+    consent: formData.get("consent") === "on",
+    // honeypot: hidden field that only bots fill in
     web: String(formData.get("web") ?? ""),
-    // čas vykreslenia formulára – odoslanie do 4 s je robot
+    // form render timestamp: submitting within 4 s means a bot
     ts: Number(formData.get("ts") ?? 0),
   };
 
-  if (!payload.meno || !payload.ados || !payload.email || !payload.suhlas) {
-    // Natívna validácia to zachytí skôr; toto je poistka pre odoslanie bez JS
+  if (!payload.name || !payload.agency || !payload.email || !payload.consent) {
+    // Native validation catches this first; this is a fallback for submissions without JS
     redirect("/#kontakt");
   }
 
@@ -36,12 +36,12 @@ export async function submitPilotForm(formData: FormData) {
   const isSpam = Boolean(payload.web) || tooFastOrStale(payload.ts) || errors.length > 0 || rateLimited(ip);
 
   if (isSpam) {
-    console.warn("[pilotný formulár] zahodené ako spam", { ip, errors, honeypot: Boolean(payload.web), ts: payload.ts });
+    console.warn("[pilot form] dropped as spam", { ip, errors, honeypot: Boolean(payload.web), ts: payload.ts });
   } else {
     try {
       await sendPilotRequest(payload);
     } catch (err) {
-      console.error("[pilotný formulár] e-mail sa nepodarilo odoslať", err, payload);
+      console.error("[pilot form] failed to send e-mail", err, payload);
     }
   }
 

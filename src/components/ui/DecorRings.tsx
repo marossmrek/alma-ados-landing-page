@@ -8,8 +8,8 @@ import { cx } from "@/lib/cx";
 type Ring = { size: number; left?: string; right?: string; top?: string; bottom?: string; opacity: number; dashed?: boolean };
 
 /*
-  Sústredné kruhy z Figmy (AI › Decor, Kontakt › Decor) ako SVG – skupina len pomaly „dýcha".
-  `mobile` je samostatná, menšia sada pre < 640 px.
+  Concentric rings from Figma (AI › Decor, Kontakt › Decor) as SVG; the group only "breathes" slowly.
+  `mobile` is a separate, smaller set for < 640 px.
 */
 export function DecorRings({
   rings,
@@ -19,7 +19,7 @@ export function DecorRings({
 }: {
   rings: Ring[];
   mobile?: Ring[];
-  /* pomalé otáčanie prerušovaných kruhov (striedavo v protismere) */
+  /* slow rotation of the dashed rings (alternating direction) */
   spin?: boolean;
   className?: string;
 }) {

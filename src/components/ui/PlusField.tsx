@@ -9,7 +9,7 @@ const COLS = 6;
 const ROWS = 16;
 const STEP = 26;
 
-/* Dekoratívne pole krížikov (Figma „Plus field") – krížiky náhodne „blikajú" a pole jemne pláva */
+/* Decorative field of plus signs (Figma "Plus field"): the plusses "blink" randomly and the field floats gently */
 export function PlusField({ className }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
   const plusses: { x: number; y: number }[] = [];

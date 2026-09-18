@@ -46,7 +46,6 @@ export default function DakujemePage() {
               <Button href="/" variant="secondary" size="M" className="w-full sm:w-auto">
                 Späť na stránku
               </Button>
-              {/* TODO: odosielanie potvrdenia e-mailom zatiaľ nie je napojené */}
               <p className="text-caption text-text-tertiary">Potvrdenie sme poslali aj na váš e-mail.</p>
             </div>
           </div>

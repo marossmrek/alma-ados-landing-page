@@ -4,12 +4,12 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 
 /*
-  Scroll animácie celej stránky:
-  .gsap-reveal        – jemný fade-up pri vstupe do viewportu (prvky už vo viewporte sa neskrývajú)
-  [data-fx="line"]    – čiara sa „nakreslí" zľava (scaleX)
-  [data-fx="pop"]     – prvok vyskočí (scale + fade)
-  [data-fx="float"]   – dekor jemne pláva hore-dole
-  [data-fx="breathe"] – dekor pomaly „dýcha" (scale)
+  Page-wide scroll animations:
+  .gsap-reveal        - subtle fade-up on entering the viewport (elements already in view are not hidden)
+  [data-fx="line"]    - line "draws" in from the left (scaleX)
+  [data-fx="pop"]     - element pops in (scale + fade)
+  [data-fx="float"]   - decor floats gently up and down
+  [data-fx="breathe"] - decor slowly "breathes" (scale)
 */
 export function Reveal() {
   useGSAP(() => {

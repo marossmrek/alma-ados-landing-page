@@ -42,7 +42,7 @@ export function FaqItem({
           </span>
         </button>
       </h3>
-      {/* Plynulé otvorenie cez grid-template-rows (0fr → 1fr) */}
+      {/* Smooth expand via grid-template-rows (0fr → 1fr) */}
       <div
         id={`${id}-panel`}
         role="region"
