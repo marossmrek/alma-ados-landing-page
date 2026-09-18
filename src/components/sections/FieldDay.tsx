@@ -346,9 +346,19 @@ export function FieldDay() {
               </div>
 
               {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
-              <div className="scrolly-mobile flex flex-col items-center gap-2.5 lg:hidden">
+              <div className="scrolly-mobile relative flex flex-col items-center gap-2.5 lg:hidden">
+                {/* Tiny corner tag: sits in the free corner of the gray panel, never over the device */}
+                <span
+                  className={cx(
+                    "absolute left-0 top-0 z-10 flex flex-col rounded-8 bg-bg-dark px-1.5 py-1 text-[9px] leading-[12px] transition-opacity duration-300",
+                    STOPS[active].device === "web" && "opacity-0",
+                  )}
+                >
+                  <span className="font-semibold tracking-[0.06em] text-status-warning-on-dark">NÁHĽAD</span>
+                  <span className="text-text-inverse">koncept</span>
+                </span>
                 {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
-                <div className="relative flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
+                <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
                   <DeviceStack
                     active={active}
                     phoneClassName="w-[min(188px,19vh)]"
@@ -356,15 +366,6 @@ export function FieldDay() {
                     webSizes="360px"
                     bezel="thin"
                   />
-                  {/* Floats over the device, takes no height; the web mockup carries its own label */}
-                  <PreviewLabel
-                    className={cx(
-                      "absolute bottom-2 left-1/2 -translate-x-1/2 transition-opacity duration-300",
-                      STOPS[active].device === "web" && "opacity-0",
-                    )}
-                  >
-                    Koncept · ukážkové údaje
-                  </PreviewLabel>
                 </div>
                 <TimeRow active={active} />
                 <ol className={cx("w-full", reduced ? "flex flex-col gap-3" : "grid")}>
