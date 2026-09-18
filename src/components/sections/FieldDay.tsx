@@ -357,11 +357,13 @@ export function FieldDay() {
                   <span className="font-semibold tracking-[0.06em] text-status-warning-on-dark">NÁHĽAD</span>
                   <span className="text-text-inverse">koncept</span>
                 </span>
-                {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
-                <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
+                {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones.
+                  svh (not vh): mobile Chrome resizes vh when its toolbar collapses, which would grow the panel
+                  after ScrollTrigger measured it and make it overlap the content below. */}
+                <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center supports-[height:1svh]:min-h-[min(400px,42svh)]">
                   <DeviceStack
                     active={active}
-                    phoneClassName="w-[min(188px,19vh)]"
+                    phoneClassName="w-[min(188px,19vh)] supports-[height:1svh]:w-[min(188px,19svh)]"
                     phoneSizes="188px"
                     webSizes="360px"
                     bezel="thin"

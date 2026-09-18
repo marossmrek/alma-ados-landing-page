@@ -13,6 +13,9 @@ import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
 */
 export function Reveal() {
   useGSAP(() => {
+    // Web fonts can re-wrap text after the first measurement; re-measure pinned sections once they are in
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+
     if (prefersReducedMotion()) return;
     const vh = window.innerHeight;
 
