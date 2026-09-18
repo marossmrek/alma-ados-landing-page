@@ -133,7 +133,8 @@ export function Hero() {
                     alt="Koncept mobilnej aplikácie pre sestru: detail návštevy pacienta s plánom starostlivosti"
                     width={592}
                     height={1244}
-                    sizes="(min-width: 1280px) 296px, 60vw"
+                    sizes="(min-width: 1280px) 296px, 40vw"
+                    priority
                     className="h-auto w-full"
                   />
                 </div>

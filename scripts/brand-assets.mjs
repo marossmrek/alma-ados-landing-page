@@ -14,7 +14,7 @@ import sharp from "sharp";
 const ROOT = path.resolve(new URL(".", import.meta.url).pathname, "..");
 const brandTs = fs.readFileSync(path.join(ROOT, "src/lib/brand.ts"), "utf8");
 const pick = (key) => brandTs.match(new RegExp(`${key}:\\s*"([^"]+)"`))[1];
-const BRAND = { conceptUrl: pick("conceptUrl") };
+const BRAND = { name: pick("name"), conceptUrl: pick("conceptUrl") };
 const MARK = {
   circle: { cx: 12, cy: 8.5, r: 3 },
   left: "M4 9v4a5 5 0 0 0 5 5",
@@ -80,19 +80,37 @@ async function icons() {
   console.log("icons: icon.svg, favicon.ico, apple-icon.png");
 }
 
-/* Mockupy: prekryť starý znak novou dlaždicou a prepísať adresný riadok */
+/* Mockupy: prekryť starý znak novou dlaždicou a prepísať texty (adresný riadok, názov v hlavičke).
+   Súradnice sú v pixeloch originálu; farby textu a pozadia sa berú z obrázka. */
 const MOCKUPS = [
   {
-    file: "hero-browser.png",
+    file: "hero-browser.png", // 2080 × 1410
     logo: { x: 33, y: 139, size: 48 },
-    url: { cover: { x: 860, y: 34, w: 470, h: 42 }, cx: 1092, cy: 55, fontSize: 23 },
+    texts: [
+      { cover: { x: 860, y: 34, w: 470, h: 42 }, x: 1092, cy: 55, size: 23, weight: 400, anchor: "middle", text: BRAND.conceptUrl },
+      { cover: { x: 86, y: 136, w: 170, h: 29 }, x: 96, cy: 152, size: 19, weight: 600, anchor: "start", text: BRAND.name },
+      {
+        cover: { x: 372, y: 162, w: 530, h: 24 },
+        x: 374,
+        cy: 174,
+        size: 16,
+        weight: 400,
+        anchor: "start",
+        text: `${BRAND.name} · 5 sestier v teréne · 42 návštev naplánovaných`,
+      },
+    ],
   },
   {
-    file: "dashboard.png",
+    file: "dashboard.png", // 2400 × 1588
     logo: { x: 36, y: 120, size: 54 },
-    url: { cover: { x: 1000, y: 22, w: 520, h: 46 }, cx: 1250, cy: 45, fontSize: 26 },
+    texts: [
+      { cover: { x: 1000, y: 22, w: 520, h: 46 }, x: 1250, cy: 45, size: 26, weight: 400, anchor: "middle", text: BRAND.conceptUrl },
+      { cover: { x: 106, y: 122, w: 190, h: 31 }, x: 108, cy: 139, size: 22, weight: 600, anchor: "start", text: BRAND.name },
+    ],
   },
 ];
+
+const hex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
 
 async function mockups() {
   for (const m of MOCKUPS) {
@@ -100,27 +118,29 @@ async function mockups() {
     const src = await sharp(out).png().toBuffer();
     const img = sharp(src);
     const { width, height } = await img.metadata();
-    // farby z originálu: pozadie adresného riadku a farba textu
     const raw = await img.clone().raw().toBuffer();
     const px = (x, y) => {
       const i = (y * width + x) * 4;
       return [raw[i], raw[i + 1], raw[i + 2]];
     };
-    const bg = px(m.url.cover.x + 4, m.url.cover.y + 4);
-    let darkest = [255, 255, 255];
-    for (let y = m.url.cover.y; y < m.url.cover.y + m.url.cover.h; y += 2)
-      for (let x = m.url.cover.x; x < m.url.cover.x + m.url.cover.w; x += 2) {
-        const c = px(x, y);
-        if (c[0] + c[1] + c[2] < darkest[0] + darkest[1] + darkest[2]) darkest = c;
-      }
-    const hex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
-    const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-  <rect x="${m.url.cover.x}" y="${m.url.cover.y}" width="${m.url.cover.w}" height="${m.url.cover.h}" fill="${hex(bg)}"/>
-  <text x="${m.url.cx}" y="${m.url.cy}" font-family="Inter" font-weight="400" font-size="${m.url.fontSize}" fill="${hex(darkest)}" text-anchor="middle" dominant-baseline="central">${BRAND.conceptUrl}</text>
-  <g transform="translate(${m.logo.x} ${m.logo.y})">${tileSvg(m.logo.size).replace(/<\?xml[^>]*>|<svg[^>]*>|<\/svg>/g, "")}</g>
-</svg>`;
+    const parts = [];
+    for (const t of m.texts) {
+      const bg = px(t.cover.x + 2, t.cover.y + 2);
+      let darkest = [255, 255, 255];
+      for (let y = t.cover.y; y < t.cover.y + t.cover.h; y += 2)
+        for (let x = t.cover.x; x < t.cover.x + t.cover.w; x += 2) {
+          const c = px(x, y);
+          if (c[0] + c[1] + c[2] < darkest[0] + darkest[1] + darkest[2]) darkest = c;
+        }
+      parts.push(
+        `<rect x="${t.cover.x}" y="${t.cover.y}" width="${t.cover.w}" height="${t.cover.h}" fill="${hex(bg)}"/>`,
+        `<text x="${t.x}" y="${t.cy}" font-family="Inter" font-weight="${t.weight}" font-size="${t.size}" fill="${hex(darkest)}" text-anchor="${t.anchor}" dominant-baseline="central">${t.text}</text>`,
+      );
+    }
+    parts.push(`<g transform="translate(${m.logo.x} ${m.logo.y})">${tileSvg(m.logo.size).replace(/<\?xml[^>]*>|<svg[^>]*>|<\/svg>/g, "")}</g>`);
+    const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${parts.join("\n")}</svg>`;
     await sharp(src).composite([{ input: Buffer.from(overlay), top: 0, left: 0 }]).png().toFile(out);
-    console.log(`mockup: ${m.file} (bg ${hex(bg)}, text ${hex(darkest)})`);
+    console.log(`mockup: ${m.file}`);
   }
 }
 
