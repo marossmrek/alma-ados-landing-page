@@ -331,11 +331,11 @@ export function FieldDay() {
 
             {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
             <div className="scrolly-mobile flex flex-col items-center gap-3 lg:hidden">
-              <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
-              <div className="flex min-h-[400px] w-full max-w-[360px] items-center">
+              {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
+              <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
                 <DeviceStack
                   active={active}
-                  phoneClassName="w-[188px]"
+                  phoneClassName="w-[min(188px,19vh)]"
                   phoneSizes="188px"
                   webSizes="360px"
                   bezel="thin"
@@ -364,6 +364,10 @@ export function FieldDay() {
             <p className="sr-only" aria-live="polite">
               {STOPS[active].time}: {STOPS[active].title}
             </p>
+          </div>
+          {/* Mobile: the preview label sits outside the pinned panel so it never steals height */}
+          <div className="mt-3 flex justify-center lg:hidden">
+            <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
           </div>
         </div>
 

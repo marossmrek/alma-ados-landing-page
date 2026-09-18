@@ -92,7 +92,8 @@ export function Hero() {
             </p>
             <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:items-center">
               <Button href="#kontakt" focusTarget="#pilot-form [name='name']" arrow>
-                Chcem sa zapojiť do pilotného programu
+                <span className="sm:hidden">Chcem sa zapojiť do pilotu</span>
+                <span className="hidden sm:inline">Chcem sa zapojiť do pilotného programu</span>
               </Button>
               <Button href="#produkt" variant="secondary">
                 Pozrieť, ako to funguje

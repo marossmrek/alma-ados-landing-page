@@ -27,6 +27,7 @@ const STOPS = [
     text: "Návštevy a záznamy z terénu sú priebežne dostupné v systéme. Vedúca vidí ich stav a položky, ktoré si vyžadujú pozornosť.",
     steps: ["Prehľad návštev", "Stav záznamov", "Výnimky"],
     tooltip: "7 záznamov na kontrolu",
+    tooltipShort: "7 na kontrolu",
     rects: [
       { x: 216, y: 146, w: 430, h: 33 },
       { x: 12, y: 144, w: 170, h: 29 },
@@ -39,6 +40,7 @@ const STOPS = [
     text: "Neúplné alebo problémové záznamy systém zvýrazní. Vedúca ich môže skontrolovať a podľa potreby vrátiť sestre na doplnenie.",
     steps: ["Zvýraznené výnimky", "Kontrola záznamu", "Vrátiť na doplnenie"],
     tooltip: "Skontrolovať · chýba zápis S/O",
+    tooltipShort: "Chýba zápis S/O",
     rects: [
       { x: 217, y: 351, w: 558, h: 96 },
       { x: 795, y: 222, w: 380, h: 549 },
@@ -51,6 +53,7 @@ const STOPS = [
     text: "Skontrolované údaje sú pripravené na ďalšie spracovanie a slúžia ako podklad pre vykazovanie zdravotným poisťovniam.",
     steps: ["Skontrolované údaje", "Podklady pre vykazovanie", "Ďalšie spracovanie"],
     tooltip: "Podklady pre vykazovanie · 6 skontrolovaných návštev",
+    tooltipShort: "Podklady · 6 návštev",
     rects: [
       { x: 12, y: 318, w: 170, h: 30 },
       { x: 990, y: 53, w: 186, h: 37 },
@@ -136,7 +139,8 @@ function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; si
           className="office-rect absolute inline-flex max-w-[88%] -translate-y-full items-center whitespace-nowrap rounded-full bg-accent px-2.5 py-1 text-caption text-text-inverse lg:px-3 lg:py-1.5 lg:text-label-s shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
           style={{ left: `${(first.x / W) * 100}%`, top: `calc(${(first.y / H) * 100}% - 8px)` }}
         >
-          {stop.tooltip}
+          <span className="lg:hidden">{stop.tooltipShort}</span>
+          <span className="hidden lg:inline">{stop.tooltip}</span>
         </span>
       </div>
     </div>
@@ -147,19 +151,26 @@ function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; si
 function DayCounters({ active, compact = false }: { active: number; compact?: boolean }) {
   const c = STOPS[active].counts;
   return (
-    <dl className={cx("grid w-full gap-2", compact ? "grid-cols-2" : "grid-cols-4")}>
+    <dl className={cx("grid w-full", compact ? "grid-cols-4 gap-1.5" : "grid-cols-4 gap-2")}>
       {COUNTERS.map((k) => {
         const v = c[k.key];
         return (
           <div
             key={k.key}
             className={cx(
-              "flex flex-col gap-0.5 rounded-10 border bg-bg-surface px-3 py-2 transition-colors duration-300",
+              "flex flex-col rounded-10 border bg-bg-surface transition-colors duration-300",
+              compact ? "gap-0 px-2 py-1.5" : "gap-0.5 px-3 py-2",
               v > 0 ? "border-border-default" : "border-transparent",
             )}
           >
-            <dt className="text-caption text-text-tertiary">{k.label}</dt>
-            <dd className={cx("text-h4 transition-colors duration-300", v > 0 ? "text-text-primary" : "text-text-tertiary")}>
+            <dt className={cx("text-text-tertiary", compact ? "text-[10px] leading-[13px]" : "text-caption")}>{k.label}</dt>
+            <dd
+              className={cx(
+                "transition-colors duration-300",
+                compact ? "text-label-m" : "text-h4",
+                v > 0 ? "text-text-primary" : "text-text-tertiary",
+              )}
+            >
               <Counter value={v} duration={0.6} />
             </dd>
           </div>
@@ -308,7 +319,7 @@ export function OfficeDay() {
         <div className="w-full">
           <div
             ref={panelRef}
-            className="w-full rounded-[20px] bg-bg-muted p-4 sm:p-6 lg:rounded-[24px] lg:px-10 lg:py-10"
+            className="w-full rounded-[20px] bg-bg-muted p-3 sm:p-6 lg:rounded-[24px] lg:px-10 lg:py-10"
           >
             {/* Desktop */}
             <div className="office-desktop hidden lg:grid lg:grid-cols-[1fr_380px] lg:items-center lg:gap-10">
@@ -360,7 +371,6 @@ export function OfficeDay() {
 
             {/* Mobile */}
             <div className="office-mobile flex flex-col items-center gap-3 lg:hidden">
-              <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
               <Dashboard active={active} tipId={`${tipId}-m`} sizes="100vw" />
               <DayCounters active={active} compact />
               <TimeRow active={active} />
@@ -386,6 +396,10 @@ export function OfficeDay() {
             <p className="sr-only" aria-live="polite">
               {STOPS[active].time}: {STOPS[active].title}
             </p>
+          </div>
+          {/* Mobile: the preview label sits outside the pinned panel so it never steals height */}
+          <div className="mt-3 flex justify-center lg:hidden">
+            <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
           </div>
         </div>
 

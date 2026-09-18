@@ -58,7 +58,7 @@ function Slider({
         <label htmlFor={id} className="text-label-m text-text-primary">
           {label}
         </label>
-        <output htmlFor={id} className="whitespace-nowrap text-label-m text-accent-text tabular-nums">
+        <output htmlFor={id} className="min-w-[6.5rem] shrink-0 whitespace-nowrap text-right text-label-m text-accent-text tabular-nums">
           {value} {unit}
         </output>
       </div>

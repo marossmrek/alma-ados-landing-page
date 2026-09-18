@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { AnchorLink } from "@/components/ui/AnchorLink";
 import { CONTACT, NAV_LINKS } from "@/lib/nav";
+import { cx } from "@/lib/cx";
 
 const linkCls =
   "focus-ring inline-block rounded-[4px] text-body-s text-text-inverse-muted transition-colors hover:text-text-inverse";
@@ -27,9 +28,9 @@ export function Footer() {
                 </AnchorLink>
               ))}
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="col-span-2 flex flex-col gap-3 sm:col-span-1">
               <p className="text-label-s text-text-inverse">Kontakt</p>
-              <a href={`mailto:${CONTACT.email}`} className={linkCls}>
+              <a href={`mailto:${CONTACT.email}`} className={cx(linkCls, "break-all")}>
                 {CONTACT.email}
               </a>
               <a href={CONTACT.phoneHref} className={linkCls}>

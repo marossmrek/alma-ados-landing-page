@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { CONTACT } from "@/lib/nav";
 import { BRAND } from "@/lib/brand";
 
@@ -12,27 +11,38 @@ export type PilotRequest = {
 };
 
 /*
-  Sends e-mail via SMTP (nodemailer). Configured in .env.local, see .env.example.
-  For Gmail: SMTP_HOST=smtp.gmail.com, SMTP_PORT=587, SMTP_USER=…@gmail.com, SMTP_PASS=app password.
+  E-mail delivery via the Resend API (https://resend.com), same setup as other thunderstruck sites.
+  Env: RESEND_API_KEY (required), CONTACT_TO (recipient of leads), CONTACT_FROM (sender on a domain
+  verified in Resend). Without an API key the request is only logged.
 */
-function createTransport() {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
-  const port = Number(SMTP_PORT ?? 587);
-  return nodemailer.createTransport({
-    host: SMTP_HOST,
-    port,
-    secure: port === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
-}
+const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
 const NURSE_COUNT_LABELS: Record<string, string> = { "1-3": "1 až 3", "4-8": "4 až 8", "9+": "9 a viac" };
 
+type Mail = { from: string; to: string; replyTo?: string; subject: string; text: string };
+
+async function sendViaResend(apiKey: string, mail: Mail) {
+  const res = await fetch(RESEND_ENDPOINT, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: mail.from,
+      to: [mail.to],
+      reply_to: mail.replyTo,
+      subject: mail.subject,
+      text: mail.text,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Resend ${res.status}: ${body.slice(0, 300)}`);
+  }
+}
+
 export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean }> {
-  const transport = createTransport();
+  const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO ?? CONTACT.email;
-  const from = process.env.CONTACT_FROM ?? process.env.SMTP_USER ?? CONTACT.email;
+  const from = process.env.CONTACT_FROM ?? `${BRAND.name} <${CONTACT.email}>`;
 
   const lines = [
     `Meno a priezvisko: ${p.name}`,
@@ -45,12 +55,12 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
     p.message || "(bez správy)",
   ];
 
-  if (!transport) {
-    console.warn("[mail] SMTP not configured (.env.local), e-mail not sent.\n" + lines.join("\n"));
+  if (!apiKey) {
+    console.warn("[mail] RESEND_API_KEY is not set, e-mail not sent.\n" + lines.join("\n"));
     return { sent: false };
   }
 
-  await transport.sendMail({
+  await sendViaResend(apiKey, {
     from,
     to,
     replyTo: p.email,
@@ -58,9 +68,9 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
     text: `Nový záujem o pilotný program z webu.\n\n${lines.join("\n")}`,
   });
 
-  // Confirmation to the applicant (best effort, does not block the submission)
+  // Confirmation to the applicant (best effort, never blocks the lead)
   try {
-    await transport.sendMail({
+    await sendViaResend(apiKey, {
       from,
       to: p.email,
       subject: `${BRAND.name}: prijali sme váš záujem o pilotný program`,
