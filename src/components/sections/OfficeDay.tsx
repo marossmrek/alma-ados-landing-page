@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { reserveTimelineHeight } from "@/lib/timeline";
 import { cx } from "@/lib/cx";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
@@ -226,6 +227,7 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
         </h3>
         <p className={cx("text-text-secondary", compact ? "text-body-s" : "text-body-m")}>{s.text}</p>
         <div
+          data-steps
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
           style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
           aria-hidden={!expanded}
@@ -281,6 +283,14 @@ export function OfficeDay() {
           }
           if (progress) gsap.set(progress, { scaleY: 0, transformOrigin: "top center" });
 
+          // Desktop: reserve the tallest timeline state so the pinned panel never grows after measuring
+          const list = desktop ? panel.querySelector<HTMLElement>(`${root} ol`) : null;
+          const reserve = () => {
+            if (list) reserveTimelineHeight(list);
+          };
+          reserve();
+          ScrollTrigger.addEventListener("refreshInit", reserve);
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: panel,
@@ -305,6 +315,8 @@ export function OfficeDay() {
           });
           tl.to({}, { duration: 1 });
           if (progress) tl.to(progress, { scaleY: 1, duration: 1, ease: "none" }, 0);
+
+          return () => ScrollTrigger.removeEventListener("refreshInit", reserve);
         },
       );
     },
@@ -323,89 +335,85 @@ export function OfficeDay() {
 
         {/* Pinned panel: dashboard on the left (on top on mobile), timeline on the right */}
         <div className="w-full">
-          <div
-            ref={panelRef}
-            className="w-full rounded-[20px] bg-bg-muted p-3 sm:p-6 lg:rounded-[24px] lg:px-10 lg:py-10"
-          >
-            {/* Desktop */}
-            <div className="office-desktop hidden lg:grid lg:grid-cols-[1fr_380px] lg:items-center lg:gap-10">
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
-                    <Icon name="clock" className="size-4 text-accent" />
-                    <span className="tabular-nums">{STOPS[active].time}</span>
-                    <span className="text-text-tertiary">·</span>
-                    <span className="text-text-secondary">Kancelária</span>
-                  </span>
-                  <PreviewLabel />
+          {/* The pinned element is an unstyled wrapper; the gray panel inside keeps its natural height */}
+          <div ref={panelRef} className="w-full">
+            <div className="w-full rounded-[20px] bg-bg-muted p-3 sm:p-6 lg:rounded-[24px] lg:px-10 lg:py-10">
+              {/* Desktop */}
+              <div className="office-desktop hidden lg:grid lg:grid-cols-[1fr_430px] lg:items-center lg:gap-10">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
+                      <Icon name="clock" className="size-4 text-accent" />
+                      <span className="tabular-nums">{STOPS[active].time}</span>
+                      <span className="text-text-tertiary">·</span>
+                      <span className="text-text-secondary">Kancelária</span>
+                    </span>
+                    <PreviewLabel />
+                  </div>
+                  <Dashboard active={active} tipId={`${tipId}-d`} sizes="(min-width: 1280px) 720px, 60vw" />
+                  <DayCounters active={active} />
                 </div>
-                <Dashboard active={active} tipId={`${tipId}-d`} sizes="(min-width: 1280px) 720px, 60vw" />
-                <DayCounters active={active} />
+
+                <ol className="relative flex min-w-0 flex-col gap-2.5">
+                  <span aria-hidden="true" className="absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-border-default" />
+                  <span aria-hidden="true" className="office-progress absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-accent" />
+                  {STOPS.map((s, i) => {
+                    const isActive = i === active;
+                    const done = i < active;
+                    return (
+                      <li key={s.time} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
+                        <span
+                          className={cx(
+                            "mt-[18px] text-label-m tabular-nums transition-colors duration-300",
+                            isActive ? "text-accent-text" : "text-text-secondary",
+                          )}
+                        >
+                          {s.time}
+                        </span>
+                        <span className="relative flex justify-center">
+                          <span
+                            aria-hidden="true"
+                            className={cx(
+                              "relative z-10 mt-[22px] size-3 rounded-full ring-4 ring-bg-muted transition-colors duration-300",
+                              isActive || done ? "bg-accent" : "bg-border-default",
+                            )}
+                          />
+                        </span>
+                        <StopCard s={s} isActive={isActive} />
+                      </li>
+                    );
+                  })}
+                </ol>
               </div>
 
-              <ol className="relative flex min-w-0 flex-col gap-2.5">
-                <span aria-hidden="true" className="absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-border-default" />
-                <span aria-hidden="true" className="office-progress absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-accent" />
-                {STOPS.map((s, i) => {
-                  const isActive = i === active;
-                  const done = i < active;
-                  return (
-                    <li key={s.time} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
-                      <span
+              {/* Mobile */}
+              <div className="office-mobile flex flex-col items-center gap-2.5 lg:hidden">
+                <Dashboard active={active} tipId={`${tipId}-m`} sizes="100vw" />
+                <DayCounters active={active} compact />
+                <TimeRow active={active} />
+                <ol className={cx("w-full", reduced ? "flex flex-col gap-3" : "grid")}>
+                  {STOPS.map((s, i) => {
+                    const isActive = reduced || i === active;
+                    return (
+                      <li
+                        key={s.time}
+                        aria-hidden={!isActive}
                         className={cx(
-                          "mt-[18px] text-label-m tabular-nums transition-colors duration-300",
-                          isActive ? "text-accent-text" : "text-text-secondary",
+                          !reduced && "col-start-1 row-start-1 transition-opacity duration-300",
+                          !reduced && (isActive ? "opacity-100" : "pointer-events-none opacity-0"),
                         )}
                       >
-                        {s.time}
-                      </span>
-                      <span className="relative flex justify-center">
-                        <span
-                          aria-hidden="true"
-                          className={cx(
-                            "relative z-10 mt-[22px] size-3 rounded-full ring-4 ring-bg-muted transition-colors duration-300",
-                            isActive || done ? "bg-accent" : "bg-border-default",
-                          )}
-                        />
-                      </span>
-                      <StopCard s={s} isActive={isActive} />
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
+                        <StopCard s={s} isActive={isActive} compact />
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
 
-            {/* Mobile */}
-            <div className="office-mobile flex flex-col items-center gap-2.5 lg:hidden">
-              <Dashboard active={active} tipId={`${tipId}-m`} sizes="100vw" />
-              <DayCounters active={active} compact />
-              <TimeRow active={active} />
-              <ol className={cx("w-full", reduced ? "flex flex-col gap-3" : "grid")}>
-                {STOPS.map((s, i) => {
-                  const isActive = reduced || i === active;
-                  return (
-                    <li
-                      key={s.time}
-                      aria-hidden={!isActive}
-                      className={cx(
-                        !reduced && "col-start-1 row-start-1 transition-opacity duration-300",
-                        !reduced && (isActive ? "opacity-100" : "pointer-events-none opacity-0"),
-                      )}
-                    >
-                      <StopCard s={s} isActive={isActive} compact />
-                    </li>
-                  );
-                })}
-              </ol>
+              <p className="sr-only" aria-live="polite">
+                {STOPS[active].time}: {STOPS[active].title}
+              </p>
             </div>
-
-            <p className="sr-only" aria-live="polite">
-              {STOPS[active].time}: {STOPS[active].title}
-            </p>
-          </div>
-          {/* Mobile: the preview label sits outside the pinned panel so it never steals height */}
-          <div className="mt-3 flex justify-center lg:hidden">
-            <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
           </div>
         </div>
 

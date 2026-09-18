@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { reserveTimelineHeight } from "@/lib/timeline";
 import { cx } from "@/lib/cx";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
@@ -114,19 +115,19 @@ function DeviceStack({
 /* Compact timeline (mobile): four times in a row, the active one highlighted */
 function TimeRow({ active }: { active: number }) {
   return (
-    <ol className="flex w-full items-center justify-between gap-2" aria-hidden="true">
+    <ol className="flex w-full items-center gap-1.5" aria-hidden="true">
       {STOPS.map((s, i) => (
-        <li key={s.time} className="flex items-center gap-2">
+        <li key={s.time} className={cx("flex items-center gap-1.5", i < STOPS.length - 1 && "min-w-0 flex-1")}>
           <span
             className={cx(
-              "rounded-full px-2 py-0.5 text-label-s tabular-nums transition-colors duration-300",
+              "shrink-0 rounded-full px-1.5 py-0.5 text-label-s tabular-nums transition-colors duration-300 sm:px-2",
               i === active ? "bg-accent text-text-inverse" : i < active ? "text-accent-text" : "text-text-secondary",
             )}
           >
             {s.time}
           </span>
           {i < STOPS.length - 1 && (
-            <span className={cx("h-px w-3 sm:w-8", i < active ? "bg-accent" : "bg-border-default")} />
+            <span className={cx("h-px min-w-1.5 flex-1", i < active ? "bg-accent" : "bg-border-default")} />
           )}
         </li>
       ))}
@@ -157,6 +158,7 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
         <p className={cx("text-text-secondary", compact ? "text-body-s" : "text-body-m")}>{s.text}</p>
         {/* Steps expand only for the active stop, so the pinned panel stays short */}
         <div
+          data-steps
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
           style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
           aria-hidden={!expanded}
@@ -219,6 +221,14 @@ export function FieldDay() {
             return;
           }
 
+          // Desktop: reserve the tallest timeline state so the pinned panel never grows after measuring
+          const list = desktop ? panel.querySelector<HTMLElement>(`${root} ol`) : null;
+          const reserve = () => {
+            if (list) reserveTimelineHeight(list);
+          };
+          reserve();
+          ScrollTrigger.addEventListener("refreshInit", reserve);
+
           gsap.set(screens, { autoAlpha: 0, y: 16 });
           gsap.set(screens[0], { autoAlpha: 1, y: 0 });
           gsap.set(web, { autoAlpha: 0, y: 16, scale: 0.98 });
@@ -258,6 +268,8 @@ export function FieldDay() {
             .to(web, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35 }, 1.85)
             .to({}, { duration: 0.2 }, 2.2);
           if (progress) tl.to(progress, { scaleY: 1, duration: 2.4, ease: "none" }, 0);
+
+          return () => ScrollTrigger.removeEventListener("refreshInit", reserve);
         },
       );
     },
@@ -275,102 +287,109 @@ export function FieldDay() {
 
         {/* Scrolly panel: block wrapper so the pin-spacer is not a flex item */}
         <div className="w-full">
-          <div
-            ref={panelRef}
-            className="w-full rounded-[20px] bg-bg-muted p-4 sm:p-6 lg:rounded-[24px] lg:px-14 lg:py-10"
-          >
-            {/* Desktop: pinned device on the left, timeline with stops on the right */}
-            <div className="scrolly-desktop hidden lg:flex lg:flex-row lg:items-center lg:gap-14">
-              <div className="flex w-[460px] shrink-0 flex-col items-center gap-4">
-                <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
-                  <Icon name="clock" className="size-4 text-accent" />
-                  <span className="tabular-nums">{STOPS[active].time}</span>
-                  <span className="text-text-tertiary">·</span>
-                  <span className="text-text-secondary">{STOPS[active].device === "web" ? "Kancelária" : "V teréne"}</span>
-                </span>
-                <div className="flex min-h-[560px] w-full items-center">
+          {/* The pinned element is an unstyled wrapper; the gray panel inside keeps its natural height */}
+          <div ref={panelRef} className="w-full">
+            <div className="w-full rounded-[20px] bg-bg-muted p-4 sm:p-6 lg:rounded-[24px] lg:px-14 lg:py-10">
+              {/* Desktop: pinned device on the left, timeline with stops on the right */}
+              <div className="scrolly-desktop hidden lg:flex lg:flex-row lg:items-center lg:gap-14">
+                <div className="flex w-[460px] shrink-0 flex-col items-center gap-4">
+                  <div className="flex w-full items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
+                      <Icon name="clock" className="size-4 text-accent" />
+                      <span className="tabular-nums">{STOPS[active].time}</span>
+                      <span className="text-text-tertiary">·</span>
+                      <span className="text-text-secondary">{STOPS[active].device === "web" ? "Kancelária" : "V teréne"}</span>
+                    </span>
+                    <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
+                  </div>
+                  <div className="flex min-h-[560px] w-full items-center">
+                    <DeviceStack
+                      active={active}
+                      phoneClassName="w-[264px]"
+                      phoneSizes="264px"
+                      webSizes="460px"
+                    />
+                  </div>
+                </div>
+
+                <ol className="relative flex min-w-0 flex-1 flex-col gap-2.5">
+                  {/* Vertical axis and its progress */}
+                  <span aria-hidden="true" className="absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-border-default" />
+                  <span aria-hidden="true" className="day-progress absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-accent" />
+                  {STOPS.map((s, i) => {
+                    const isActive = i === active;
+                    const done = i < active;
+                    return (
+                      <li key={s.time} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
+                        <span
+                          className={cx(
+                            "mt-[18px] text-label-m tabular-nums transition-colors duration-300",
+                            isActive ? "text-accent-text" : "text-text-secondary",
+                          )}
+                        >
+                          {s.time}
+                        </span>
+                        <span className="relative flex justify-center">
+                          <span
+                            aria-hidden="true"
+                            className={cx(
+                              "relative z-10 mt-[22px] size-3 rounded-full ring-4 ring-bg-muted transition-colors duration-300",
+                              isActive || done ? "bg-accent" : "bg-border-default",
+                            )}
+                          />
+                        </span>
+                        <StopCard s={s} isActive={isActive} />
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+
+              {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
+              <div className="scrolly-mobile flex flex-col items-center gap-2.5 lg:hidden">
+                {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
+                <div className="relative flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
                   <DeviceStack
                     active={active}
-                    phoneClassName="w-[264px]"
-                    phoneSizes="264px"
-                    webSizes="460px"
+                    phoneClassName="w-[min(188px,19vh)]"
+                    phoneSizes="188px"
+                    webSizes="360px"
+                    bezel="thin"
                   />
+                  {/* Floats over the device, takes no height; the web mockup carries its own label */}
+                  <PreviewLabel
+                    className={cx(
+                      "absolute bottom-2 left-1/2 -translate-x-1/2 transition-opacity duration-300",
+                      STOPS[active].device === "web" && "opacity-0",
+                    )}
+                  >
+                    Koncept · ukážkové údaje
+                  </PreviewLabel>
                 </div>
-                <PreviewLabel />
-              </div>
-
-              <ol className="relative flex min-w-0 flex-1 flex-col gap-2.5">
-                {/* Vertical axis and its progress */}
-                <span aria-hidden="true" className="absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-border-default" />
-                <span aria-hidden="true" className="day-progress absolute bottom-7 left-[71px] top-7 w-[2px] rounded-full bg-accent" />
-                {STOPS.map((s, i) => {
-                  const isActive = i === active;
-                  const done = i < active;
-                  return (
-                    <li key={s.time} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
-                      <span
+                <TimeRow active={active} />
+                <ol className={cx("w-full", reduced ? "flex flex-col gap-3" : "grid")}>
+                  {STOPS.map((s, i) => {
+                    const isActive = reduced || i === active;
+                    return (
+                      <li
+                        key={s.time}
+                        aria-hidden={!isActive}
                         className={cx(
-                          "mt-[18px] text-label-m tabular-nums transition-colors duration-300",
-                          isActive ? "text-accent-text" : "text-text-secondary",
+                          !reduced && "col-start-1 row-start-1 transition-opacity duration-300",
+                          !reduced && (isActive ? "opacity-100" : "pointer-events-none opacity-0"),
                         )}
                       >
-                        {s.time}
-                      </span>
-                      <span className="relative flex justify-center">
-                        <span
-                          aria-hidden="true"
-                          className={cx(
-                            "relative z-10 mt-[22px] size-3 rounded-full ring-4 ring-bg-muted transition-colors duration-300",
-                            isActive || done ? "bg-accent" : "bg-border-default",
-                          )}
-                        />
-                      </span>
-                      <StopCard s={s} isActive={isActive} />
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-
-            {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
-            <div className="scrolly-mobile flex flex-col items-center gap-2.5 lg:hidden">
-              {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
-              <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
-                <DeviceStack
-                  active={active}
-                  phoneClassName="w-[min(188px,19vh)]"
-                  phoneSizes="188px"
-                  webSizes="360px"
-                  bezel="thin"
-                />
+                        <StopCard s={s} isActive={isActive} compact />
+                      </li>
+                    );
+                  })}
+                </ol>
               </div>
-              <TimeRow active={active} />
-              <ol className={cx("w-full", reduced ? "flex flex-col gap-3" : "grid")}>
-                {STOPS.map((s, i) => {
-                  const isActive = reduced || i === active;
-                  return (
-                    <li
-                      key={s.time}
-                      aria-hidden={!isActive}
-                      className={cx(
-                        !reduced && "col-start-1 row-start-1 transition-opacity duration-300",
-                        !reduced && (isActive ? "opacity-100" : "pointer-events-none opacity-0"),
-                      )}
-                    >
-                      <StopCard s={s} isActive={isActive} compact />
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
 
-            <p className="sr-only" aria-live="polite">
-              {STOPS[active].time}: {STOPS[active].title}
-            </p>
-          </div>
-          {/* Mobile: the preview label sits outside the pinned panel so it never steals height */}
-          <div className="mt-3 flex justify-center lg:hidden">
-            <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
+              <p className="sr-only" aria-live="polite">
+                {STOPS[active].time}: {STOPS[active].title}
+              </p>
+            </div>
           </div>
         </div>
 

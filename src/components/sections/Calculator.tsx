@@ -58,7 +58,7 @@ function Slider({
         <label htmlFor={id} className="text-label-m text-text-primary">
           {label}
         </label>
-        <output htmlFor={id} className="min-w-[6.5rem] shrink-0 whitespace-nowrap text-right text-label-m text-accent-text tabular-nums">
+        <output htmlFor={id} className="min-w-[5.75rem] shrink-0 whitespace-nowrap text-right text-label-m text-accent-text tabular-nums">
           {value} {unit}
         </output>
       </div>
@@ -103,9 +103,9 @@ export function Calculator() {
           lead="Zadajte približné čísla vašej ADOS. Skutočné hodnoty chceme zmerať v pilote."
         />
 
-        <div className="gsap-reveal grid gap-3 rounded-[20px] border border-border-default bg-bg-surface p-3 shadow-[0_24px_48px_-12px_rgba(20,23,31,0.08)] lg:grid-cols-[1fr_440px] lg:rounded-[24px]">
+        <div className="gsap-reveal grid gap-3 rounded-[20px] border border-border-default bg-bg-surface p-2 shadow-[0_24px_48px_-12px_rgba(20,23,31,0.08)] sm:p-3 lg:grid-cols-[1fr_440px] lg:rounded-[24px]">
           {/* Inputs */}
-          <div className="flex flex-col gap-7 p-3 pt-5 sm:p-5 lg:gap-8 lg:p-7">
+          <div className="flex flex-col gap-7 p-2.5 pt-4 sm:p-5 lg:gap-8 lg:p-7">
             {INPUTS.map((i) => (
               <Slider
                 key={i.key}
@@ -126,7 +126,7 @@ export function Calculator() {
           </div>
 
           {/* Result */}
-          <div className="flex flex-col gap-6 rounded-[14px] bg-bg-dark p-6 text-text-inverse sm:p-8 lg:rounded-[16px]" aria-live="polite">
+          <div className="flex flex-col gap-6 rounded-[14px] bg-bg-dark p-5 text-text-inverse sm:p-8 lg:rounded-[16px]" aria-live="polite">
             <div className="flex flex-col gap-1">
               <p className="text-label-s text-text-inverse-muted">Dopisovanie dokumentácie dnes</p>
               <p className="flex items-baseline gap-2">

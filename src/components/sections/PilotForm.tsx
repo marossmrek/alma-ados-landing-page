@@ -36,7 +36,13 @@ function validate(fd: FormData): Errors {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" arrow={!pending} disabled={pending} aria-disabled={pending} className="w-full">
+    <Button
+      type="submit"
+      arrow={!pending}
+      disabled={pending}
+      aria-disabled={pending}
+      className="w-full whitespace-normal text-center"
+    >
       {pending ? "Odosielam…" : "Mám záujem o pilotnú spoluprácu"}
     </Button>
   );
@@ -100,7 +106,7 @@ export function PilotForm() {
       noValidate
       onSubmit={onSubmit}
       aria-labelledby="pilot-form-title"
-      className="gsap-reveal relative flex w-full max-w-[544px] flex-col gap-5 rounded-[20px] bg-bg-surface p-6 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.25)] sm:p-8 lg:rounded-[24px] lg:p-10"
+      className="gsap-reveal relative flex w-full max-w-[544px] flex-col gap-5 rounded-[20px] bg-bg-surface p-5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.25)] sm:p-8 lg:rounded-[24px] lg:p-10"
     >
       {/* Anti-spam honeypot, invisible to humans */}
       <div className="absolute -left-[9999px] top-0 h-px w-px overflow-hidden" aria-hidden="true">
