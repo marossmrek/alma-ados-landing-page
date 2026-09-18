@@ -111,7 +111,7 @@ export function Hero() {
                 className="absolute left-[-12%] top-0 w-[124%] max-w-none overflow-hidden rounded-[14px] bg-bg-surface shadow-[0_2px_6px_rgba(20,23,31,0.06),0_24px_48px_-12px_rgba(20,23,31,0.1)] sm:left-0 sm:w-[86.667%]"
               >
                 <Image
-                  src="/images/hero-browser.png"
+                  src="/images/hero-browser-alma.png"
                   alt="Koncept webového prehľadu pre vedúcu sestru a administratívu: dnešné návštevy, sestry v teréne, mapa trás a upozornenia"
                   width={2080}
                   height={1410}
@@ -126,7 +126,7 @@ export function Hero() {
               >
                 <div
                   data-hero="phone"
-                  className="overflow-hidden rounded-[12%/5.8%] bg-bg-dark shadow-[0_32px_64px_-16px_rgba(20,23,31,0.22)]"
+                  className="overflow-hidden rounded-[12%/5.8%] shadow-[0_32px_64px_-16px_rgba(20,23,31,0.22)]"
                 >
                   <Image
                     src="/images/hero-phone.png"

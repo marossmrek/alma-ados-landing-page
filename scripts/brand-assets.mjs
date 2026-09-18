@@ -1,7 +1,7 @@
 /*
   Generuje značkové assety z jediného zdroja pravdy (src/lib/brand.ts):
   - src/app/icon.svg, src/app/favicon.ico (16/32/48), src/app/apple-icon.png (180)
-  - prepis loga a adresy v rastrových mockupoch (public/images/hero-browser.png, dashboard.png)
+  - prepis loga a adresy v rastrových mockupoch (public/images/hero-browser-alma.png, dashboard-alma.png; prípona -alma obchádza cache starých exportov)
   Spustenie: node scripts/brand-assets.mjs
   Poznámka: mockupy sú exporty z Figmy; namiesto nového exportu sa starý znak prekryje novým
   a adresný riadok sa prepíše textom z BRAND.conceptUrl. Upravuje súbory na mieste (prekrytie je idempotentné),
@@ -84,7 +84,7 @@ async function icons() {
    Súradnice sú v pixeloch originálu; farby textu a pozadia sa berú z obrázka. */
 const MOCKUPS = [
   {
-    file: "hero-browser.png", // 2080 × 1410
+    file: "hero-browser-alma.png", // 2080 × 1410
     logo: { x: 33, y: 139, size: 48 },
     texts: [
       { cover: { x: 860, y: 34, w: 470, h: 42 }, x: 1092, cy: 55, size: 23, weight: 400, anchor: "middle", text: BRAND.conceptUrl },
@@ -101,7 +101,7 @@ const MOCKUPS = [
     ],
   },
   {
-    file: "dashboard.png", // 2400 × 1588
+    file: "dashboard-alma.png", // 2400 × 1588
     logo: { x: 36, y: 120, size: 54 },
     texts: [
       { cover: { x: 1000, y: 22, w: 520, h: 46 }, x: 1250, cy: 45, size: 26, weight: 400, anchor: "middle", text: BRAND.conceptUrl },
