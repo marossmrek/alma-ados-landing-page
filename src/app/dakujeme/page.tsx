@@ -6,7 +6,7 @@ import { CheckItem } from "@/components/ui/CheckItem";
 import { Icon } from "@/components/ui/Icon";
 
 export const metadata: Metadata = {
-  title: "Ďakujeme | ADOS Sestra",
+  title: "Ďakujeme | Alma ADOS",
   description: "Váš záujem o pilotný program sme prijali. Ozveme sa vám do niekoľkých pracovných dní.",
   robots: { index: false },
 };

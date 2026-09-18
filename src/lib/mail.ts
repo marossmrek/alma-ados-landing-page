@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { CONTACT } from "@/lib/nav";
+import { BRAND } from "@/lib/brand";
 
 export type PilotRequest = {
   meno: string;
@@ -53,7 +54,7 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
     from,
     to,
     replyTo: p.email,
-    subject: `Pilotný program ADOS Sestra: ${p.ados}`,
+    subject: `Pilotný program ${BRAND.name}: ${p.ados}`,
     text: `Nový záujem o pilotný program z webu.\n\n${lines.join("\n")}`,
   });
 
@@ -62,10 +63,10 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
     await transport.sendMail({
       from,
       to: p.email,
-      subject: "ADOS Sestra: prijali sme váš záujem o pilotný program",
+      subject: `${BRAND.name}: prijali sme váš záujem o pilotný program`,
       text:
         `Dobrý deň, ${p.meno},\n\n` +
-        "ďakujeme za záujem o pilotný program ADOS Sestra. Ozveme sa vám spravidla do niekoľkých pracovných dní " +
+        `ďakujeme za záujem o pilotný program ${BRAND.name}. Ozveme sa vám spravidla do niekoľkých pracovných dní ` +
         "a dohodneme krátky úvodný rozhovor (približne 20 minút).\n\n" +
         "Odoslaním formulára nevzniká žiadny záväzok.\n\n" +
         `${CONTACT.company}\n${CONTACT.email} · ${CONTACT.phone}`,

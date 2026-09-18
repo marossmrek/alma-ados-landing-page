@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { BRAND } from "@/lib/brand";
 import localFont from "next/font/local";
 import "./globals.css";
 import { BackToTop } from "@/components/BackToTop";
@@ -16,10 +17,30 @@ const inter = localFont({
   adjustFontFallback: "Arial",
 });
 
+const DESCRIPTION =
+  "Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.";
+
+/* Absolútna adresa webu pre OG/Twitter obrázky: NEXT_PUBLIC_SITE_URL, inak adresa z Vercelu */
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  title: "ADOS Sestra | Systém pre agentúry domácej starostlivosti (vo vývoji)",
-  description:
-    "Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.",
+  metadataBase: new URL(SITE_URL),
+  title: `${BRAND.name} | Systém pre agentúry domácej starostlivosti (vo vývoji)`,
+  description: DESCRIPTION,
+  applicationName: BRAND.name,
+  openGraph: {
+    type: "website",
+    locale: "sk_SK",
+    siteName: BRAND.name,
+    title: `${BRAND.name}: dokumentácia vzniká pri pacientovi`,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.name}: dokumentácia vzniká pri pacientovi`,
+    description: DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {

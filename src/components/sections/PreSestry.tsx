@@ -267,7 +267,7 @@ export function PreSestry() {
         <SectionHeader
           eyebrow="V teréne"
           title="Jeden deň sestry. Od ranného plánu po hotové podklady."
-          lead="Takto by vyzeral bežný deň s ADOS Sestra: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
+          lead="Takto by vyzeral bežný deň s Alma ADOS: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
         />
 
         {/* Scrolly panel – blokový wrapper, aby pin-spacer nebol flex položkou */}

@@ -7,7 +7,7 @@ import { cx } from "@/lib/cx";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 /*
-  Jedna návšteva, dve cesty. Prepínač „Dnes" / „S ADOS Sestra" prepíše tých istých päť krokov:
+  Jedna návšteva, dve cesty. Prepínač „Dnes" / „S Alma ADOS" prepíše tých istých päť krokov:
   čo dnes overujeme s agentúrami (bez tvrdení o tom, ako každá ADOS funguje) a ako by to malo bežať s produktom.
   Súhrn sú kvalitatívne ciele, nie namerané výsledky.
 */
@@ -59,7 +59,7 @@ const SUMMARY: { label: string; dnes: string; sestra: string }[] = [
 
 const MODES: { id: Mode; label: string }[] = [
   { id: "dnes", label: "Dnes" },
-  { id: "sestra", label: "S ADOS Sestra" },
+  { id: "sestra", label: "S Alma ADOS" },
 ];
 
 
@@ -101,7 +101,7 @@ export function VisitCompare() {
         <div className="flex flex-col gap-1">
           <h3 className="text-h4 text-text-primary">Jedna návšteva, dve cesty</h3>
           <p className="text-body-s text-text-secondary">
-            Čo dnes overujeme s agentúrami a ako by to malo bežať s ADOS Sestra.
+            Čo dnes overujeme s agentúrami a ako by to malo bežať s Alma ADOS.
           </p>
         </div>
         <div role="tablist" aria-label="Priebeh návštevy" className="flex w-full gap-1 rounded-[10px] border border-border-default bg-bg-muted p-1 sm:w-auto">

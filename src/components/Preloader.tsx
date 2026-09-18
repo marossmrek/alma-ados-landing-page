@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
+import { BRAND, BRAND_MARK_PATHS } from "@/lib/brand";
 
 export const PRELOADER_DONE_EVENT = "ados:preloader-done";
 
@@ -19,7 +20,7 @@ function markDone() {
 }
 
 /*
-  Preloader: EKG čiara z loga sa nakreslí, objaví sa wordmark, dole beží progress linka,
+  Preloader: znak Alma (dve dlane a človek) sa nakreslí na dlaždici, objaví sa wordmark, dole beží progress linka,
   overlay sa vytratí (fade-out) a až potom štartuje hero intro (HeroMotion počúva PRELOADER_DONE_EVENT).
   Zobrazí sa pri každom načítaní domovskej stránky (desktop aj mobil); pri prefers-reduced-motion sa preskočí.
 */
@@ -42,10 +43,12 @@ export function Preloader() {
     () => {
       if (!active || !ref.current) return;
       const root = ref.current;
-      const path = root.querySelector<SVGPathElement>(".pre-path");
-      if (!path) return;
-      const len = path.getTotalLength();
-      gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+      const paths = gsap.utils.toArray<SVGGeometryElement>(".pre-path", root);
+      if (!paths.length) return;
+      paths.forEach((p) => {
+        const len = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+      });
       document.body.style.overflow = "hidden";
 
       const finish = () => {
@@ -70,8 +73,8 @@ export function Preloader() {
         finish();
       });
       // Východiskové stavy sú aj v inline štýloch (pred hydratáciou je overlay prázdny, nie „hotový")
-      tl.to(path, { strokeDashoffset: 0, duration: 0.55, ease: "sine.inOut" }, 0.05)
-        .fromTo(root.querySelector(".pre-dot"), { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.25 }, 0.55)
+      tl.fromTo(root.querySelector(".pre-tile"), { scale: 0.85, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35 }, 0)
+        .to(paths, { strokeDashoffset: 0, duration: 0.5, ease: "sine.inOut", stagger: 0.08 }, 0.1)
         .fromTo(
           root.querySelectorAll(".pre-word"),
           { y: 10, autoAlpha: 0 },
@@ -100,31 +103,37 @@ export function Preloader() {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-page"
     >
       <div className="pre-inner flex flex-col items-center gap-5">
-        <svg viewBox="0 0 18 18" className="h-16 w-16 text-accent" fill="none" aria-hidden="true">
-          <path
-            className="pre-path"
-            d="M16.5 9H13.5L11.25 15.75L6.75 2.25L4.5 9H1.5"
+        <span
+          className="pre-tile flex size-16 items-center justify-center rounded-[18px] bg-[#0d7f81] text-white"
+          style={{ opacity: 0, transform: "scale(0.85)" }}
+          aria-hidden="true"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className="size-10"
+            fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ strokeDasharray: 40, strokeDashoffset: 40 }}
-          />
-          <circle
-            className="pre-dot"
-            cx="16.5"
-            cy="9"
-            r="1.1"
-            fill="currentColor"
-            style={{ opacity: 0, transformOrigin: "16.5px 9px", transform: "scale(0)" }}
-          />
-        </svg>
-        <p className="flex items-baseline gap-1.5 text-h3 text-text-primary">
+          >
+            <circle
+              className="pre-path"
+              cx={BRAND_MARK_PATHS.circle.cx}
+              cy={BRAND_MARK_PATHS.circle.cy}
+              r={BRAND_MARK_PATHS.circle.r}
+              style={{ strokeDasharray: 40, strokeDashoffset: 40 }}
+            />
+            <path className="pre-path" d={BRAND_MARK_PATHS.left} style={{ strokeDasharray: 40, strokeDashoffset: 40 }} />
+            <path className="pre-path" d={BRAND_MARK_PATHS.right} style={{ strokeDasharray: 40, strokeDashoffset: 40 }} />
+          </svg>
+        </span>
+        <p className="flex items-baseline gap-[0.3em] text-h3 font-semibold tracking-[-0.01em] text-text-primary">
           <span className="pre-word" style={{ opacity: 0 }}>
-            ADOS
+            {BRAND.brand}
           </span>
           <span className="pre-word text-accent-text" style={{ opacity: 0 }}>
-            Sestra
+            {BRAND.segment}
           </span>
         </p>
       </div>
