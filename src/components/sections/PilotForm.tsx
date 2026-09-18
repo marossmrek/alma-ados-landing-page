@@ -43,7 +43,7 @@ function SubmitButton() {
       aria-disabled={pending}
       className="w-full whitespace-normal text-center"
     >
-      {pending ? "Odosielam…" : "Mám záujem o pilotnú spoluprácu"}
+      {pending ? "Odosielam…" : "Mám záujem o pilot"}
     </Button>
   );
 }
