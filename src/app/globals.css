@@ -1,26 +1,358 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Design tokens – 1:1 z Figma premenných.
+  Kolekcia „Web": bg/*, text/*, border/*, accent/*, status/*, map/*
+  Kolekcia „Spacing": space/4–128, radius/*
+  Tailwind 4: každá premenná v @theme je zároveň CSS custom property na :root
+  a generuje utility (bg-bg-page, text-text-primary, border-border-default,
+  bg-accent, rounded-12 …).
+*/
+@theme {
+  /* bg/* */
+  --color-bg-page: #f7f6f3;
+  --color-bg-surface: #ffffff;
+  --color-bg-subtle: #f8f9fa;
+  --color-bg-muted: #efede8;
+  --color-bg-canvas: #f4f5f7;
+  --color-bg-dark: #14181f;
+  --color-bg-dark-elevated: #1e242e;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* text/* */
+  --color-text-primary: #141b24;
+  --color-text-secondary: #5c6674;
+  /*
+    text/tertiary vo Figme = #8a94a2 (2.9:1 na svetlom pozadí). Na svetlom používame #646e7c (4.9:1),
+    na tmavom pozadí ostáva pôvodná hodnota (5.7:1) ako text-tertiary-on-dark.
+  */
+  --color-text-tertiary: #646e7c;
+  --color-text-tertiary-on-dark: #8a94a2;
+  --color-text-inverse: #ffffff;
+  --color-text-inverse-muted: #a9b1bc;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* border/* */
+  --color-border-default: #e4e1db;
+  --color-border-subtle: #eeece7;
+  --color-border-dark: #2c333e;
+
+  /*
+    accent/* (alias na Farby produktu)
+    accent/default vo Figme = #0f8b8d. Biely text na ňom má kontrast 4.11:1 (< 4.5:1 AA),
+    preto je web-hodnota stmavená na #0d7f81 (4.8:1) – vizuálne takmer nerozlíšiteľné,
+    mockupy (PNG) ostávajú s pôvodnou farbou. Hover accent/strong ostáva tmavší.
+  */
+  --color-accent: #0d7f81;
+  --color-accent-strong: #0b6e70;
+  --color-accent-text: #0a6466;
+  --color-accent-soft: #e3f3f2;
+  --color-accent-on-dark: #3fa9ab; /* text v accent farbe na bg/dark (wordmark, čísla krokov) – 6.3:1 */
+
+  /* status/* – warning vo Figme #b4570a (4.33:1 na warning-soft) → #aa5209 kvôli 4.5:1 */
+  --color-status-warning: #aa5209;
+  --color-status-warning-on-dark: #d97b2b; /* svetlejší odtieň pre text na bg/dark (NÁHĽAD) */
+  --color-status-warning-soft: #fdf0de;
+  --color-status-success: #3a8a2e;
+  --color-status-success-soft: #eaf5e6;
+  --color-status-danger: #c0262b;
+  --color-status-danger-soft: #fce8e8;
+  --color-status-info: #3b5a8c;
+  --color-status-info-soft: #e9eef6;
+
+  /* map/* */
+  --color-map-land: #eef1ec;
+  --color-map-water: #d9e8f1;
+  --color-map-road: #ffffff;
+
+  /* radius/* */
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-full: 999px;
+
+  /*
+    space/* – Figma škála 4/8/12/16/20/24/32/40/48/64/80/96/128 je zhodná
+    s predvolenou Tailwind škálou (1 = 4px → p-6 = space/24, gap-8 = space/32 …).
+    Sémantické spacingy sekcií:
+  */
+  --spacing-section: 96px;
+  --spacing-section-sm: 48px;
+  --spacing-gutter: 120px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-nav: 0px 4px 16px 0px rgba(0, 0, 0, 0.06);
+  --shadow-segment: 0px 1px 1.5px rgba(0, 0, 0, 0.08);
+
+  --animate-pulse-once: pulse-once 0.6s ease-out 1;
+  --animate-ping-slow: ping-slow 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  @keyframes ping-slow {
+    0% { transform: scale(1); opacity: 0.6; }
+    75%, 100% { transform: scale(2.2); opacity: 0; }
+  }
+  --animate-nudge-x: nudge-x 1.4s ease-in-out infinite;
+  @keyframes nudge-x {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+  }
+  @keyframes pulse-once {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 139, 141, 0.45); }
+    50% { transform: scale(1.04); box-shadow: 0 0 0 10px rgba(15, 139, 141, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 139, 141, 0); }
   }
 }
 
+/* Spacing tokeny aj ako samostatné premenné (space/4–128) */
+:root {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+  --space-128: 128px;
+}
+
+/*
+  Textové štýly – Inter (letterSpacing vo Figme je v %, prevedené na em).
+  Škála zúžená na 8 rolí: 12 caption/eyebrow · 14 body-s/label-s · 16 body-m/label-m · 18 body-l ·
+  20 h4/lead · 28 h3 · 44 h2 · 64 display (+ mobilné varianty 32/40).
+*/
+@utility text-display {
+  font-size: 64px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+@utility text-h2 {
+  font-size: 44px;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+@utility text-h3 {
+  font-size: 28px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+@utility text-h4 {
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  font-weight: 600;
+}
+@utility text-mobile-h1 {
+  font-size: 40px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+@utility text-mobile-h2 {
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+@utility text-lead {
+  font-size: 20px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+@utility text-body-l {
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+@utility text-body-m {
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+@utility text-body-s {
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+@utility text-label-m {
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+@utility text-label-s {
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+@utility text-eyebrow {
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+@utility text-caption {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* Fokus – Button má vo Figme len Default/Hover/Disabled, focus ring = accent */
+@utility focus-ring {
+  outline: none;
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Kontajner 1200 px (1440 − 2 × 120) */
+@utility container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+  @media (min-width: 64rem) {
+    padding-inline: 40px;
+  }
+  @media (min-width: 80rem) {
+    padding-inline: 0;
+  }
+}
+
+html {
+  /* Plynulý scroll rieši GSAP ScrollToPlugin (lib/scroll.ts); natívne scroll-behavior by sa s ním bil */
+  scroll-padding-top: 80px;
+  /* Poistka proti vodorovnému scrollu (dekor, pripnuté panely); clip nevytvára scroll kontajner, sticky nav funguje */
+  overflow-x: clip;
+  /* Vlastný scrollbar – Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-default) var(--color-bg-page);
+}
+
+/* Vlastný scrollbar – WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-page);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-default);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg-page);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-tertiary);
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--color-accent);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Typografia: vyvážené zalomenie nadpisov (bez sirôt), krajšie zalomenie odsekov */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p,
+li {
+  text-wrap: pretty;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: clip;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Elementy animované GSAP fade-up – bez JS zostanú viditeľné */
+.gsap-reveal {
+  will-change: transform, opacity;
+}
+
+/* Posuvník kalkulačky: dráha s vyplnenou časťou (--range-pct), okrúhly palec v accent farbe */
+.range-accent {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.range-accent::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--color-accent) var(--range-pct, 0%), var(--color-border-default) var(--range-pct, 0%));
+}
+.range-accent::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-border-default);
+}
+.range-accent::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+.range-accent::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: 999px;
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 2px 6px rgba(20, 27, 36, 0.18);
+  transition: transform 150ms ease;
+}
+.range-accent::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-bg-surface);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 2px 6px rgba(20, 27, 36, 0.18);
+}
+.range-accent:hover::-webkit-slider-thumb,
+.range-accent:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+
+/* Spotlight v sekcii Pre ADOS: obdĺžniky a tooltip sa medzi zastávkami plynulo presunú */
+.office-rect {
+  transition:
+    x 0.5s ease,
+    y 0.5s ease,
+    width 0.5s ease,
+    height 0.5s ease,
+    left 0.5s ease,
+    top 0.5s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .office-rect {
+    transition: none;
+  }
 }

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ukážkové env pre SMTP je súčasťou repa
+!.env.example
