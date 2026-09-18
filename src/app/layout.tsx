@@ -20,12 +20,13 @@ const inter = localFont({
 const DESCRIPTION =
   "Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.";
 
-/* Absolute site URL for OG/Twitter images: NEXT_PUBLIC_SITE_URL, otherwise the Vercel address */
+/* Absolute site URL for canonical and OG/Twitter images: NEXT_PUBLIC_SITE_URL, otherwise the production domain */
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  process.env.NEXT_PUBLIC_SITE_URL ?? (process.env.NODE_ENV === "production" ? BRAND.siteUrl : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: `${BRAND.name} | Systém pre agentúry domácej starostlivosti (vo vývoji)`,
   description: DESCRIPTION,
   applicationName: BRAND.name,

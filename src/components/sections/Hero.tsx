@@ -111,7 +111,7 @@ export function Hero() {
                 className="absolute left-[-12%] top-0 w-[124%] max-w-none overflow-hidden rounded-[14px] bg-bg-surface shadow-[0_2px_6px_rgba(20,23,31,0.06),0_24px_48px_-12px_rgba(20,23,31,0.1)] sm:left-0 sm:w-[86.667%]"
               >
                 <Image
-                  src="/images/hero-browser-alma.png"
+                  src="/images/hero-browser-v2.png"
                   alt="Koncept webového prehľadu pre vedúcu sestru a administratívu: dnešné návštevy, sestry v teréne, mapa trás a upozornenia"
                   width={2080}
                   height={1410}

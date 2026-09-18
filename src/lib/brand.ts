@@ -9,10 +9,12 @@ export const BRAND = {
   brand: "Alma",
   /** Segment (second part of the wordmark, accent color) */
   segment: "ADOS",
-  /** App address in mockups (domain still to be finalized) */
-  appHost: "app.alma.sk",
+  /** Public site origin (canonical URL, OG image); NEXT_PUBLIC_SITE_URL overrides it */
+  siteUrl: "https://adosalma.sk",
+  /** App address in mockups */
+  appHost: "app.adosalma.sk",
   /** Text in the browser mockup's address bar */
-  conceptUrl: "app.alma.sk · koncept",
+  conceptUrl: "app.adosalma.sk · koncept",
 } as const;
 
 /* Mark: two palms holding a person, 24 × 24 grid, stroke via currentColor */

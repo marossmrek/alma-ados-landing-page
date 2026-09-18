@@ -47,7 +47,7 @@ const STOPS = [
     text: "Návštevy, vykonaná starostlivosť a dokumentácia sú priebežne dostupné v systéme na kontrolu a ďalšie spracovanie.",
     steps: ["Kontrola záznamov", "Výnimky na doplnenie", "Podklady na vykazovanie"],
     device: "web",
-    screen: "/images/dashboard-alma.png",
+    screen: "/images/dashboard-v2.png",
     alt: "Webový prehľad pre vedúcu sestru a administratívu: schvaľovanie návštev s tabuľkou a detailom pacienta",
   },
 ] as const;

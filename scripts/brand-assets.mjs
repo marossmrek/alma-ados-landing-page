@@ -1,7 +1,7 @@
 /*
   Generates brand assets from the single source of truth (src/lib/brand.ts):
   - src/app/icon.svg, src/app/favicon.ico (16/32/48), src/app/apple-icon.png (180)
-  - rewrites the logo and address in the raster mockups (public/images/hero-browser-alma.png, dashboard-alma.png; the -alma suffix bypasses the cache of old exports)
+  - rewrites the logo and address in the raster mockups (public/images/hero-browser-v2.png, dashboard-v2.png; the -alma suffix bypasses the cache of old exports)
   Run: node scripts/brand-assets.mjs
   Note: the mockups are Figma exports; instead of re-exporting, the old mark is covered with the new one
   and the address bar is rewritten with the text from BRAND.conceptUrl. Edits the files in place (the overlay is idempotent);
@@ -84,7 +84,7 @@ async function icons() {
    Coordinates are in pixels of the original; text and background colors are sampled from the image. */
 const MOCKUPS = [
   {
-    file: "hero-browser-alma.png", // 2080 × 1410
+    file: "hero-browser-v2.png", // 2080 × 1410
     logo: { x: 33, y: 139, size: 48 },
     texts: [
       { cover: { x: 860, y: 34, w: 470, h: 42 }, x: 1092, cy: 55, size: 23, weight: 400, anchor: "middle", text: BRAND.conceptUrl },
@@ -101,7 +101,7 @@ const MOCKUPS = [
     ],
   },
   {
-    file: "dashboard-alma.png", // 2400 × 1588
+    file: "dashboard-v2.png", // 2400 × 1588
     logo: { x: 36, y: 120, size: 54 },
     texts: [
       { cover: { x: 1000, y: 22, w: 520, h: 46 }, x: 1250, cy: 45, size: 26, weight: 400, anchor: "middle", text: BRAND.conceptUrl },

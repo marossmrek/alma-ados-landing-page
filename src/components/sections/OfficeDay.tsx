@@ -87,7 +87,7 @@ function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; si
       style={{ aspectRatio: `${W} / ${H}` }}
     >
       <Image
-        src="/images/dashboard-alma.png"
+        src="/images/dashboard-v2.png"
         alt="Koncept webového prehľadu pre vedúcu sestru a administratívu: schvaľovanie návštev s tabuľkou návštev a detailom pacienta. Štítok Náhľad: koncept pripravovaného produktu, ukážkové údaje."
         width={2400}
         height={1588}
