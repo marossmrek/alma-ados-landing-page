@@ -7,27 +7,27 @@ import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Counter } from "@/components/ui/Counter";
 
-/* Udalosť pre formulár: predvyplní počet sestier podľa kalkulačky */
-export const PREFILL_EVENT = "ados:prefill-pocet-sestier";
-export function pocetSestierBucket(n: number) {
+/* Event for the form: prefills the nurse count from the calculator */
+export const PREFILL_EVENT = "ados:prefill-nurse-count";
+export function nurseCountBucket(n: number) {
   return n <= 3 ? "1-3" : n <= 8 ? "4-8" : "9+";
 }
 
-const WORK_DAYS = 21; // pracovných dní v mesiaci
-const SAVED_SHARE = 0.6; // konzervatívny predpoklad: 60 % zápisov vznikne priamo pri návšteve
+const WORK_DAYS = 21; // working days per month
+const SAVED_SHARE = 0.6; // conservative assumption: 60 % of records are written directly during the visit
 
 const INPUTS = [
-  { key: "sestry", label: "Sestry v teréne", min: 1, max: 20, step: 1, unit: (v: number) => (v === 1 ? "sestra" : v < 5 ? "sestry" : "sestier") },
-  { key: "navstevy", label: "Návštevy na sestru za deň", min: 3, max: 14, step: 1, unit: (v: number) => (v === 1 ? "návšteva" : v < 5 ? "návštevy" : "návštev") },
-  { key: "minuty", label: "Minúty dopisovania po jednej návšteve", min: 3, max: 25, step: 1, unit: () => "min" },
+  { key: "nurses", label: "Sestry v teréne", min: 1, max: 20, step: 1, unit: (v: number) => (v === 1 ? "sestra" : v < 5 ? "sestry" : "sestier") },
+  { key: "visits", label: "Návštevy na sestru za deň", min: 3, max: 14, step: 1, unit: (v: number) => (v === 1 ? "návšteva" : v < 5 ? "návštevy" : "návštev") },
+  { key: "minutes", label: "Minúty dopisovania po jednej návšteve", min: 3, max: 25, step: 1, unit: () => "min" },
 ] as const;
 
 type Key = (typeof INPUTS)[number]["key"];
 type Values = Record<Key, number>;
 
-const DEFAULTS: Values = { sestry: 5, navstevy: 8, minuty: 12 };
+const DEFAULTS: Values = { nurses: 5, visits: 8, minutes: 12 };
 
-function hodiny(n: number) {
+function hoursWord(n: number) {
   const r = Math.round(n);
   return r === 1 ? "hodina" : r < 5 ? "hodiny" : "hodín";
 }
@@ -81,17 +81,17 @@ function Slider({
   );
 }
 
-export function Kalkulacka() {
+export function Calculator() {
   const baseId = useId();
   const [v, setV] = useState<Values>(DEFAULTS);
 
-  const hoursMonth = (v.sestry * v.navstevy * v.minuty * WORK_DAYS) / 60;
+  const hoursMonth = (v.nurses * v.visits * v.minutes * WORK_DAYS) / 60;
   const daysMonth = hoursMonth / 8;
-  const hoursPerNurseWeek = (v.navstevy * v.minuty * 5) / 60;
+  const hoursPerNurseWeek = (v.visits * v.minutes * 5) / 60;
   const saved = hoursMonth * SAVED_SHARE;
 
   const prefill = () => {
-    window.dispatchEvent(new CustomEvent(PREFILL_EVENT, { detail: pocetSestierBucket(v.sestry) }));
+    window.dispatchEvent(new CustomEvent(PREFILL_EVENT, { detail: nurseCountBucket(v.nurses) }));
   };
 
   return (
@@ -104,7 +104,7 @@ export function Kalkulacka() {
         />
 
         <div className="gsap-reveal grid gap-3 rounded-[20px] border border-border-default bg-bg-surface p-3 shadow-[0_24px_48px_-12px_rgba(20,23,31,0.08)] lg:grid-cols-[1fr_440px] lg:rounded-[24px]">
-          {/* Vstupy */}
+          {/* Inputs */}
           <div className="flex flex-col gap-7 p-3 pt-5 sm:p-5 lg:gap-8 lg:p-7">
             {INPUTS.map((i) => (
               <Slider
@@ -125,13 +125,13 @@ export function Kalkulacka() {
             </p>
           </div>
 
-          {/* Výsledok */}
+          {/* Result */}
           <div className="flex flex-col gap-6 rounded-[14px] bg-bg-dark p-6 text-text-inverse sm:p-8 lg:rounded-[16px]" aria-live="polite">
             <div className="flex flex-col gap-1">
               <p className="text-label-s text-text-inverse-muted">Dopisovanie dokumentácie dnes</p>
               <p className="flex items-baseline gap-2">
                 <Counter value={hoursMonth} className="text-mobile-h2 lg:text-h2" />
-                <span className="text-body-l text-text-inverse-muted">{hodiny(hoursMonth)} mesačne</span>
+                <span className="text-body-l text-text-inverse-muted">{hoursWord(hoursMonth)} mesačne</span>
               </p>
             </div>
 
@@ -157,7 +157,7 @@ export function Kalkulacka() {
               </p>
               <p className="flex items-baseline gap-2">
                 <Counter value={saved} className="text-h3" />
-                <span className="text-body-m text-text-inverse-muted">{hodiny(saved)} mesačne späť</span>
+                <span className="text-body-m text-text-inverse-muted">{hoursWord(saved)} mesačne späť</span>
               </p>
               <p className="text-caption text-text-inverse-muted">
                 Konzervatívny predpoklad. Či je reálny, overíme s pilotnými partnermi v teréne.
@@ -165,7 +165,7 @@ export function Kalkulacka() {
             </div>
 
             <div className="mt-auto flex flex-col gap-3">
-              <Button href="#kontakt" variant="inverse" arrow focusTarget="#pilot-form [name='meno']" onClick={prefill}>
+              <Button href="#kontakt" variant="inverse" arrow focusTarget="#pilot-form [name='name']" onClick={prefill}>
                 Overiť to v pilote
               </Button>
               <p className="text-caption text-text-inverse-muted">

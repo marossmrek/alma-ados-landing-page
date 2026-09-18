@@ -7,72 +7,72 @@ import { cx } from "@/lib/cx";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 /*
-  Jedna návšteva, dve cesty. Prepínač „Dnes" / „S ADOS Sestra" prepíše tých istých päť krokov:
-  čo dnes overujeme s agentúrami (bez tvrdení o tom, ako každá ADOS funguje) a ako by to malo bežať s produktom.
-  Súhrn sú kvalitatívne ciele, nie namerané výsledky.
+  One visit, two paths. The "Dnes" / "S Alma ADOS" toggle rewrites the same five steps:
+  what we are validating with agencies today (without claiming how every ADOS works) and how it should run with the product.
+  The summary lists qualitative goals, not measured results.
 */
-type Mode = "dnes" | "sestra";
+type Mode = "today" | "product";
 
 const STEPS: {
   icon: IconName;
   title: string;
-  dnes: { text: string; tag: string };
-  sestra: { text: string; tag: string };
+  today: { text: string; tag: string };
+  product: { text: string; tag: string };
 }[] = [
   {
     icon: "calendar",
     title: "Naplánovať",
-    dnes: { text: "Ako vzniká rozpis návštev a ako sa zmeny dostávajú k sestrám, sa medzi agentúrami líši. Zisťujeme, kde koordinácia stojí najviac času.", tag: "koordinácia" },
-    sestra: { text: "Plán s trasami má sestra v telefóne. Zmenu vidí hneď, bez volania.", tag: "v telefóne" },
+    today: { text: "Ako vzniká rozpis návštev a ako sa zmeny dostávajú k sestrám, sa medzi agentúrami líši. Zisťujeme, kde koordinácia stojí najviac času.", tag: "koordinácia" },
+    product: { text: "Plán s trasami má sestra v telefóne. Zmenu vidí hneď, bez volania.", tag: "v telefóne" },
   },
   {
     icon: "map-pin",
     title: "Navštíviť",
-    dnes: { text: "Overujeme, aké informácie o pacientovi má sestra pri návšteve poruke a čo si musí dohľadávať inde.", tag: "informácie" },
-    sestra: { text: "Plán starostlivosti aj história pacienta sú pri nej. Navigácia až k dverám.", tag: "pri pacientovi" },
+    today: { text: "Overujeme, aké informácie o pacientovi má sestra pri návšteve poruke a čo si musí dohľadávať inde.", tag: "informácie" },
+    product: { text: "Plán starostlivosti aj história pacienta sú pri nej. Navigácia až k dverám.", tag: "pri pacientovi" },
   },
   {
     icon: "file-text",
     title: "Zdokumentovať",
-    dnes: { text: "Pýtame sa, kedy a kde dnes vzniká záznam z návštevy a koľko času zaberá mimo pacienta.", tag: "čas na zápis" },
-    sestra: { text: "Zápis hlasom alebo klávesnicou ešte u pacienta. Fotka rany je súčasťou záznamu.", tag: "hneď" },
+    today: { text: "Pýtame sa, kedy a kde dnes vzniká záznam z návštevy a koľko času zaberá mimo pacienta.", tag: "čas na zápis" },
+    product: { text: "Zápis hlasom alebo klávesnicou ešte u pacienta. Fotka rany je súčasťou záznamu.", tag: "hneď" },
   },
   {
     icon: "check-circle",
     title: "Skontrolovať",
-    dnes: { text: "Zaujíma nás, ako vedúca sestra dnes zisťuje úplnosť záznamov a ako rieši chýbajúce údaje.", tag: "úplnosť" },
-    sestra: { text: "Záznam je pripravený na kontrolu. Neúplné alebo problémové návštevy systém zvýrazní.", tag: "na kontrolu" },
+    today: { text: "Zaujíma nás, ako vedúca sestra dnes zisťuje úplnosť záznamov a ako rieši chýbajúce údaje.", tag: "úplnosť" },
+    product: { text: "Záznam je pripravený na kontrolu. Neúplné alebo problémové návštevy systém zvýrazní.", tag: "na kontrolu" },
   },
   {
     icon: "upload",
     title: "Pripraviť na vykázanie",
-    dnes: { text: "Overujeme, ako vznikajú podklady pre poisťovne a či sa pri tom údaje zadávajú opakovane.", tag: "podklady" },
-    sestra: { text: "Schválené výkony sa pripravia do podkladov jedným krokom. Bez zbytočného prepisovania údajov.", tag: "jeden export" },
+    today: { text: "Overujeme, ako vznikajú podklady pre poisťovne a či sa pri tom údaje zadávajú opakovane.", tag: "podklady" },
+    product: { text: "Schválené výkony sa pripravia do podkladov jedným krokom. Bez zbytočného prepisovania údajov.", tag: "jeden export" },
   },
 ];
 
-const SUMMARY: { label: string; dnes: string; sestra: string }[] = [
-  { label: "Čas strávený dokumentáciou", dnes: "Zisťujeme, koľko", sestra: "Chceme znížiť" },
-  { label: "Telefonáty kvôli koordinácii", dnes: "Zisťujeme, ako často", sestra: "Chceme obmedziť" },
-  { label: "Opakované zadávanie údajov", dnes: "Zisťujeme, kde", sestra: "Chceme minimalizovať" },
+const SUMMARY: { label: string; today: string; product: string }[] = [
+  { label: "Čas strávený dokumentáciou", today: "Zisťujeme, koľko", product: "Chceme znížiť" },
+  { label: "Telefonáty kvôli koordinácii", today: "Zisťujeme, ako často", product: "Chceme obmedziť" },
+  { label: "Opakované zadávanie údajov", today: "Zisťujeme, kde", product: "Chceme minimalizovať" },
 ];
 
 const MODES: { id: Mode; label: string }[] = [
-  { id: "dnes", label: "Dnes" },
-  { id: "sestra", label: "S ADOS Sestra" },
+  { id: "today", label: "Dnes" },
+  { id: "product", label: "S Alma ADOS" },
 ];
 
 
 export function VisitCompare() {
   const ref = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLButtonElement[]>([]);
-  const [mode, setMode] = useState<Mode>("dnes");
+  const [mode, setMode] = useState<Mode>("today");
   const first = useRef(true);
-  const today = mode === "dnes";
+  const today = mode === "today";
 
   const { contextSafe } = useGSAP({ scope: ref });
 
-  // Po prepnutí sa texty krokov jemne vymenia (fade + posun), pri reduced motion bez animácie
+  // After toggling, the step texts swap subtly (fade + shift); no animation with reduced motion
   useLayoutEffect(() => {
     if (first.current) {
       first.current = false;
@@ -96,12 +96,12 @@ export function VisitCompare() {
 
   return (
     <div ref={ref} className="flex w-full flex-col gap-6 lg:gap-8">
-      {/* Prepínač */}
+      {/* Toggle */}
       <div className="gsap-reveal flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div className="flex flex-col gap-1">
           <h3 className="text-h4 text-text-primary">Jedna návšteva, dve cesty</h3>
           <p className="text-body-s text-text-secondary">
-            Čo dnes overujeme s agentúrami a ako by to malo bežať s ADOS Sestra.
+            Čo dnes overujeme s agentúrami a ako by to malo bežať s Alma ADOS.
           </p>
         </div>
         <div role="tablist" aria-label="Priebeh návštevy" className="flex w-full gap-1 rounded-[10px] border border-border-default bg-bg-muted p-1 sm:w-auto">
@@ -134,7 +134,7 @@ export function VisitCompare() {
       </div>
 
       <div id="vc-panel" role="tabpanel" aria-labelledby={`vc-tab-${mode}`} className="flex w-full flex-col gap-6 lg:gap-8">
-        {/* Desktop: rad kariet so šípkami */}
+        {/* Desktop: row of cards with arrows */}
         <ol className="hidden w-full lg:flex lg:flex-row lg:items-stretch">
           {STEPS.map((s, i) => {
             const v = s[mode];
@@ -182,7 +182,7 @@ export function VisitCompare() {
           })}
         </ol>
 
-        {/* Mobil a tablet: zvislý postup s linkou */}
+        {/* Mobile and tablet: vertical flow with a line */}
         <ol className="flex flex-col lg:hidden">
           {STEPS.map((s, i) => {
             const v = s[mode];
@@ -218,7 +218,7 @@ export function VisitCompare() {
           })}
         </ol>
 
-        {/* Súhrn: tri oblasti, prepnutím sa mení otázka na cieľ */}
+        {/* Summary: three areas, toggling turns the question into a goal */}
         <div
           className={cx(
             "gsap-reveal flex flex-col gap-3 rounded-16 border p-4 transition-colors duration-300 lg:gap-4 lg:p-5",

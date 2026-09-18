@@ -11,7 +11,7 @@ const STEPS: Step[] = [
   { title: "Verejné spustenie", meta: "2027", state: "todo" },
 ];
 
-export function StavVyvoja() {
+export function Roadmap() {
   return (
     <section aria-label="Stav vývoja" className="bg-accent-soft py-12 lg:py-32">
       <div className="container-page">
@@ -35,11 +35,11 @@ export function StavVyvoja() {
           <div className="flex flex-col gap-4 rounded-16 border border-border-default bg-bg-page p-5 lg:p-7">
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-label-m text-text-primary">Kde sme dnes</h3>
-              {/* Dátum meniť pri každej aktualizácii roadmapy */}
+              {/* Update the date with every roadmap change */}
               <p className="text-caption text-text-tertiary">Naposledy aktualizované: 17. 9. 2026</p>
             </div>
             <ol className="relative flex flex-col gap-6 sm:grid sm:grid-cols-4 sm:gap-4">
-              {/* Linka + progress (desktop) */}
+              {/* Line + progress (desktop) */}
               <span
                 aria-hidden="true"
                 className="absolute left-[30px] right-[30px] top-[13px] hidden h-0.5 bg-border-default sm:block"
@@ -51,7 +51,7 @@ export function StavVyvoja() {
               />
               {STEPS.map((s, i) => (
                 <li key={s.title} className="relative flex items-start gap-3 sm:flex-col sm:gap-2.5">
-                  {/* Zvislá spojka medzi bodmi (mobil) – accent po aktuálny krok */}
+                  {/* Vertical connector between dots (mobile), accent up to the current step */}
                   {i < STEPS.length - 1 && (
                     <span
                       aria-hidden="true"

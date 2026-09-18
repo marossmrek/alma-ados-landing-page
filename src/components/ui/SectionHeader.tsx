@@ -1,7 +1,7 @@
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { cx } from "@/lib/cx";
 
-/* Hlavička sekcie: Eyebrow + H2 vľavo (640), lead vpravo (440), zarovnané dole */
+/* Section header: Eyebrow + H2 on the left (640), lead on the right (440), bottom-aligned */
 export function SectionHeader({
   eyebrow,
   title,

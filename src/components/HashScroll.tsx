@@ -6,8 +6,8 @@ import { clearPendingTarget, hashId, peekPendingTarget, scrollToTarget } from "@
 import { PRELOADER_DONE_EVENT } from "@/components/Preloader";
 
 /*
-  Po príchode na domovskú stránku s cieľom kotvy (z podstránky cez sessionStorage,
-  alebo priamo s #hash v URL) doscrolluje plynulo na sekciu – až po preloaderi.
+  On arriving at the home page with an anchor target (from a subpage via sessionStorage,
+  or directly with a #hash in the URL) scrolls smoothly to the section, only after the preloader.
 */
 export function HashScroll() {
   useEffect(() => {

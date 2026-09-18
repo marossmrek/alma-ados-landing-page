@@ -1,6 +1,6 @@
 /*
-  Kotvy sú absolútne („/#…"), aby fungovali aj z podstránok (/dakujeme, /ochrana-osobnych-udajov).
-  Názvy: podľa miesta, kde sa systém používa – terén (sestry) a kancelária (vedenie ADOS).
+  Anchors are absolute ("/#…") so they also work from subpages (/dakujeme, /ochrana-osobnych-udajov).
+  Labels: named after where the system is used, the field (nurses) and the office (ADOS management).
 */
 export const NAV_LINKS = [
   { href: "/#produkt", label: "Ako to funguje" },
@@ -10,7 +10,7 @@ export const NAV_LINKS = [
   { href: "/#pilotny-program", label: "Pilotný program" },
 ] as const;
 
-/* Mobilné menu má rovnaké položky ako web; kontakt je vždy cez CTA „Zapojiť sa" */
+/* Mobile menu has the same items as desktop; contact is always via the „Zapojiť sa" CTA */
 export const MOBILE_NAV_LINKS = NAV_LINKS;
 
 export const SECTION_IDS = ["produkt", "pre-sestry", "pre-ados", "kalkulacka", "pilotny-program", "faq", "kontakt"] as const;

@@ -4,7 +4,7 @@ import { VisitCompare } from "@/components/sections/VisitCompare";
 import { FlowMotion } from "@/components/sections/FlowMotion";
 import { PlusField } from "@/components/ui/PlusField";
 
-export function Vizia() {
+export function HowItWorks() {
   return (
     <section id="produkt" aria-label="Ako to funguje" className="relative overflow-hidden">
       <PlusField className="bottom-[-30px] right-[-30px] h-[230px] lg:bottom-auto lg:right-[-40px] lg:top-6 lg:h-[300px] xl:right-[-60px] xl:top-20 xl:h-[420px]" />

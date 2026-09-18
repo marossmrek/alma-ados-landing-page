@@ -1,9 +1,9 @@
 /*
-  Ochrana formulára bez CAPTCHA:
-  - honeypot (skryté pole „web") – vyplnia len roboty
-  - časová kontrola – odoslanie skôr ako MIN_FILL_MS po vykreslení formulára je robot
-  - limit odoslaní z jednej IP (in-memory, per inštancia servera)
-  - validácia formátu a dĺžok, filter odkazov v texte
+  Form protection without CAPTCHA:
+  - honeypot (hidden field "web"): only bots fill it in
+  - timing check: submitting sooner than MIN_FILL_MS after the form rendered means a bot
+  - submission limit per IP (in-memory, per server instance)
+  - format and length validation, link filter in the message text
 */
 const MIN_FILL_MS = 4_000;
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
@@ -20,7 +20,7 @@ export function rateLimited(ip: string, now = Date.now()) {
   }
   arr.push(now);
   hits.set(ip, arr);
-  // upratanie starých IP
+  // prune stale IPs
   if (hits.size > 5000) {
     for (const [k, v] of hits) if (!v.some((t) => now - t < RATE_WINDOW_MS)) hits.delete(k);
   }
@@ -36,23 +36,23 @@ export function tooFastOrStale(renderedAt: number, now = Date.now()) {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function validatePayload(p: {
-  meno: string;
-  ados: string;
+  name: string;
+  agency: string;
   email: string;
-  telefon: string;
-  sprava: string;
-  pocetSestier: string;
+  phone: string;
+  message: string;
+  nurseCount: string;
 }) {
   const errors: string[] = [];
-  if (p.meno.length < 2 || p.meno.length > 100) errors.push("meno");
-  if (p.ados.length < 2 || p.ados.length > 150) errors.push("ados");
+  if (p.name.length < 2 || p.name.length > 100) errors.push("name");
+  if (p.agency.length < 2 || p.agency.length > 150) errors.push("agency");
   if (!EMAIL_RE.test(p.email) || p.email.length > 150) errors.push("email");
-  if (p.telefon && !/^[+\d][\d\s()/-]{5,24}$/.test(p.telefon)) errors.push("telefon");
-  if (!["1-3", "4-8", "9+"].includes(p.pocetSestier)) errors.push("pocet-sestier");
-  if (p.sprava.length > 2000) errors.push("sprava");
-  const links = (p.sprava.match(/https?:\/\/|www\./gi) ?? []).length;
-  if (links > 1 || /<\s*a\s/i.test(p.sprava) || /\[url/i.test(p.sprava)) errors.push("sprava-links");
-  // typický spam: odkaz v mene alebo názve
-  if (/https?:\/\/|www\./i.test(p.meno + p.ados)) errors.push("spam");
+  if (p.phone && !/^[+\d][\d\s()/-]{5,24}$/.test(p.phone)) errors.push("phone");
+  if (!["1-3", "4-8", "9+"].includes(p.nurseCount)) errors.push("nurse-count");
+  if (p.message.length > 2000) errors.push("message");
+  const links = (p.message.match(/https?:\/\/|www\./gi) ?? []).length;
+  if (links > 1 || /<\s*a\s/i.test(p.message) || /\[url/i.test(p.message)) errors.push("message-links");
+  // typical spam: a link in the name or agency name
+  if (/https?:\/\/|www\./i.test(p.name + p.agency)) errors.push("spam");
   return errors;
 }

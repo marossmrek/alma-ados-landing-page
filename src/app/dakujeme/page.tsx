@@ -6,7 +6,7 @@ import { CheckItem } from "@/components/ui/CheckItem";
 import { Icon } from "@/components/ui/Icon";
 
 export const metadata: Metadata = {
-  title: "Ďakujeme | ADOS Sestra",
+  title: "Ďakujeme | Alma ADOS",
   description: "Váš záujem o pilotný program sme prijali. Ozveme sa vám do niekoľkých pracovných dní.",
   robots: { index: false },
 };
@@ -46,7 +46,6 @@ export default function DakujemePage() {
               <Button href="/" variant="secondary" size="M" className="w-full sm:w-auto">
                 Späť na stránku
               </Button>
-              {/* TODO: odosielanie potvrdenia e-mailom zatiaľ nie je napojené */}
               <p className="text-caption text-text-tertiary">Potvrdenie sme poslali aj na váš e-mail.</p>
             </div>
           </div>

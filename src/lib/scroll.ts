@@ -1,6 +1,6 @@
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
-/* Výška kompaktnej navigácie + medzera – cieľ kotvy sa zastaví tesne pod ňou */
+/* Compact nav height + gap: the anchor target stops just below it */
 const NAV_OFFSET = 64;
 
 export function isHashHref(href: string) {
@@ -11,7 +11,7 @@ export function hashId(href: string) {
   return href.replace(/^\/?#/, "");
 }
 
-/* Kotva patrí tejto stránke? („#x" vždy, „/#x" len na domovskej) */
+/* Does the anchor belong to this page? ("#x" always, "/#x" only on the home page) */
 export function isLocalHash(href: string) {
   if (!isHashHref(href)) return false;
   if (href.startsWith("/") && window.location.pathname !== "/") return false;
@@ -27,9 +27,9 @@ function focusElement(el: HTMLElement) {
 }
 
 /*
-  Plynulý scroll na sekciu (GSAP ScrollToPlugin) + presun fokusu.
-  focusSelector: prvok, ktorý má dostať fokus (napr. prvé pole formulára);
-  použije sa len pri presnom ukazovateli (myš), na dotyku by otvoril klávesnicu.
+  Smooth scroll to a section (GSAP ScrollToPlugin) + focus move.
+  focusSelector: element that should receive focus (e.g. the first form field);
+  only used with a fine pointer (mouse), on touch it would open the keyboard.
 */
 export function scrollToTarget(href: string, focusSelector?: string) {
   const el = document.getElementById(hashId(href));
@@ -58,8 +58,8 @@ export function scrollToTarget(href: string, focusSelector?: string) {
   return true;
 }
 
-/* Kotva z podstránky: cieľ si zapamätáme, prejdeme na domovskú bez hashu (bez natívneho skoku)
-   a po načítaní doscrollujeme plynulo (HashScroll). */
+/* Anchor from a subpage: remember the target, go to the home page without a hash (no native jump)
+   and scroll smoothly after load (HashScroll). */
 const PENDING_KEY = "ados-scroll-target";
 
 export function rememberTarget(href: string, focusSelector?: string) {
@@ -70,7 +70,7 @@ export function rememberTarget(href: string, focusSelector?: string) {
   }
 }
 
-/* Len prečíta (nezmaže) – v dev StrictMode beží efekt dvakrát, zmazanie robíme až pri použití */
+/* Read only (no removal): in dev StrictMode the effect runs twice, so we clear only on use */
 export function peekPendingTarget(): { id: string; focus: string | null } | null {
   try {
     const raw = sessionStorage.getItem(PENDING_KEY);
@@ -90,7 +90,7 @@ export function clearPendingTarget() {
 
 type Router = { push: (href: string) => void };
 
-/* Spoločný handler pre všetky kotvy (NavLink, Button, AnchorLink) */
+/* Shared handler for all anchors (NavLink, Button, AnchorLink) */
 export function handleAnchorClick(
   e: { defaultPrevented: boolean; button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; preventDefault: () => void },
   href: string,
@@ -103,7 +103,7 @@ export function handleAnchorClick(
     if (scrollToTarget(href, focusSelector)) e.preventDefault();
     return;
   }
-  // „/#x" z podstránky
+  // "/#x" from a subpage
   e.preventDefault();
   rememberTarget(href, focusSelector);
   router.push("/");

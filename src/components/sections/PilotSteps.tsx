@@ -23,7 +23,7 @@ const STEPS = [
   },
 ];
 
-export function PilotKroky() {
+export function PilotSteps() {
   return (
     <section
       id="pilotny-program"

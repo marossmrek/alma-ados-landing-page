@@ -5,9 +5,9 @@ import { useGSAP } from "@gsap/react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
 /*
-  Vízia: jemný „priebeh" v slučke – ikona kroku sa mäkko rozsvieti (svetlý prstenec),
-  šípka sa na chvíľu zafarbí a posunie o pár px. Nič sa nemení na kartách ani na texte.
-  Rešpektuje prefers-reduced-motion.
+  Idea: a subtle looping "flow". The step icon softly lights up (light ring),
+  the arrow briefly changes color and shifts by a few px. Nothing changes on the cards or the text.
+  Respects prefers-reduced-motion.
 */
 export function FlowMotion({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);

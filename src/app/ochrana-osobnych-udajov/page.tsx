@@ -5,8 +5,8 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { CONTACT } from "@/lib/nav";
 
 export const metadata: Metadata = {
-  title: "Ochrana osobných údajov | ADOS Sestra",
-  description: "Zásady ochrany osobných údajov pre záujemcov o pilotný program ADOS Sestra.",
+  title: "Ochrana osobných údajov | Alma ADOS",
+  description: "Zásady ochrany osobných údajov pre záujemcov o pilotný program Alma ADOS.",
   robots: { index: false },
 };
 
@@ -24,11 +24,11 @@ export default function OchranaOsobnychUdajovPage() {
             <Eyebrow>Právne</Eyebrow>
             <h1 className="text-mobile-h2 text-text-primary lg:text-h2">Zásady ochrany osobných údajov</h1>
             <p className="text-body-l text-text-secondary">
-              Tieto zásady vysvetľujú, aké osobné údaje spracúvame na webe ADOS Sestra, prečo a aké
+              Tieto zásady vysvetľujú, aké osobné údaje spracúvame na webe Alma ADOS, prečo a aké
               máte práva. Web slúži na predstavenie pripravovaného produktu a na prihlásenie sa do
               pilotného programu.
             </p>
-            {/* TODO: doplniť IČO a sídlo spoločnosti */}
+            {/* TODO: add the company registration number (IČO) and registered office */}
             <p className="text-body-s text-text-tertiary">
               Prevádzkovateľ: {CONTACT.company} · {CONTACT.email} · {CONTACT.phone} · Naposledy
               aktualizované 17. 9. 2026

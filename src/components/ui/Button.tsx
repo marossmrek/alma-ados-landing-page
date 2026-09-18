@@ -29,7 +29,7 @@ type CommonProps = {
   variant?: Variant;
   size?: Size;
   arrow?: boolean;
-  /* Pri kotve: prvok, ktorý má po doscrollovaní dostať fokus (napr. pole formulára) */
+  /* For anchor hrefs: element to focus once scrolled into view (e.g. a form field) */
   focusTarget?: string;
   className?: string;
   children: React.ReactNode;

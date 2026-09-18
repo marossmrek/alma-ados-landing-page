@@ -1,6 +1,6 @@
 import { cx } from "@/lib/cx";
 
-/* Rám telefónu (Figma „Phone"): tmavý rám 320 × 670, obrazovka 300 × 651 s pomerom 250/541 */
+/* Phone frame (Figma "Phone"): dark frame 320 × 670, screen 300 × 651 with a 250/541 aspect ratio */
 export function PhoneFrame({
   className,
   bezel = "regular",

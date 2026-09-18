@@ -1,18 +1,19 @@
 import nodemailer from "nodemailer";
 import { CONTACT } from "@/lib/nav";
+import { BRAND } from "@/lib/brand";
 
 export type PilotRequest = {
-  meno: string;
-  ados: string;
+  name: string;
+  agency: string;
   email: string;
-  telefon: string;
-  pocetSestier: string;
-  sprava: string;
+  phone: string;
+  nurseCount: string;
+  message: string;
 };
 
 /*
-  Odoslanie e-mailu cez SMTP (nodemailer). Nastavenie v .env.local – pozri .env.example.
-  Pre Gmail: SMTP_HOST=smtp.gmail.com, SMTP_PORT=587, SMTP_USER=…@gmail.com, SMTP_PASS=heslo aplikácie.
+  Sends e-mail via SMTP (nodemailer). Configured in .env.local, see .env.example.
+  For Gmail: SMTP_HOST=smtp.gmail.com, SMTP_PORT=587, SMTP_USER=…@gmail.com, SMTP_PASS=app password.
 */
 function createTransport() {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
@@ -26,7 +27,7 @@ function createTransport() {
   });
 }
 
-const POCET: Record<string, string> = { "1-3": "1 až 3", "4-8": "4 až 8", "9+": "9 a viac" };
+const NURSE_COUNT_LABELS: Record<string, string> = { "1-3": "1 až 3", "4-8": "4 až 8", "9+": "9 a viac" };
 
 export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean }> {
   const transport = createTransport();
@@ -34,18 +35,18 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
   const from = process.env.CONTACT_FROM ?? process.env.SMTP_USER ?? CONTACT.email;
 
   const lines = [
-    `Meno a priezvisko: ${p.meno}`,
-    `Názov ADOS: ${p.ados}`,
+    `Meno a priezvisko: ${p.name}`,
+    `Názov ADOS: ${p.agency}`,
     `E-mail: ${p.email}`,
-    `Telefón: ${p.telefon || "neuvedený"}`,
-    `Počet sestier: ${POCET[p.pocetSestier] ?? p.pocetSestier}`,
+    `Telefón: ${p.phone || "neuvedený"}`,
+    `Počet sestier: ${NURSE_COUNT_LABELS[p.nurseCount] ?? p.nurseCount}`,
     "",
     "Čo zaberá najviac času:",
-    p.sprava || "(bez správy)",
+    p.message || "(bez správy)",
   ];
 
   if (!transport) {
-    console.warn("[mail] SMTP nie je nakonfigurované (.env.local) – e-mail sa neodoslal.\n" + lines.join("\n"));
+    console.warn("[mail] SMTP not configured (.env.local), e-mail not sent.\n" + lines.join("\n"));
     return { sent: false };
   }
 
@@ -53,25 +54,25 @@ export async function sendPilotRequest(p: PilotRequest): Promise<{ sent: boolean
     from,
     to,
     replyTo: p.email,
-    subject: `Pilotný program ADOS Sestra: ${p.ados}`,
+    subject: `Pilotný program ${BRAND.name}: ${p.agency}`,
     text: `Nový záujem o pilotný program z webu.\n\n${lines.join("\n")}`,
   });
 
-  // Potvrdenie záujemcovi (best effort – neblokuje odoslanie)
+  // Confirmation to the applicant (best effort, does not block the submission)
   try {
     await transport.sendMail({
       from,
       to: p.email,
-      subject: "ADOS Sestra: prijali sme váš záujem o pilotný program",
+      subject: `${BRAND.name}: prijali sme váš záujem o pilotný program`,
       text:
-        `Dobrý deň, ${p.meno},\n\n` +
-        "ďakujeme za záujem o pilotný program ADOS Sestra. Ozveme sa vám spravidla do niekoľkých pracovných dní " +
+        `Dobrý deň, ${p.name},\n\n` +
+        `ďakujeme za záujem o pilotný program ${BRAND.name}. Ozveme sa vám spravidla do niekoľkých pracovných dní ` +
         "a dohodneme krátky úvodný rozhovor (približne 20 minút).\n\n" +
         "Odoslaním formulára nevzniká žiadny záväzok.\n\n" +
         `${CONTACT.company}\n${CONTACT.email} · ${CONTACT.phone}`,
     });
   } catch (err) {
-    console.warn("[mail] potvrdenie záujemcovi sa nepodarilo odoslať", err);
+    console.warn("[mail] failed to send confirmation to the applicant", err);
   }
 
   return { sent: true };
