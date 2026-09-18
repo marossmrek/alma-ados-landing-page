@@ -65,10 +65,10 @@ const STOPS = [
 type Stop = (typeof STOPS)[number];
 
 const COUNTERS = [
-  { key: "caka", label: "Na kontrolu" },
-  { key: "schvalene", label: "Skontrolované dnes" },
-  { key: "vratene", label: "Vrátené sestre" },
-  { key: "export", label: "Pripravené na vykazovanie" },
+  { key: "caka", label: "Na kontrolu", labelShort: "Na kontrolu" },
+  { key: "schvalene", label: "Skontrolované dnes", labelShort: "Skontrolované" },
+  { key: "vratene", label: "Vrátené sestre", labelShort: "Vrátené sestre" },
+  { key: "export", label: "Pripravené na vykazovanie", labelShort: "Na vykazovanie" },
 ] as const;
 
 const PLANNED = [
@@ -151,23 +151,25 @@ function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; si
 function DayCounters({ active, compact = false }: { active: number; compact?: boolean }) {
   const c = STOPS[active].counts;
   return (
-    <dl className={cx("grid w-full", compact ? "grid-cols-4 gap-1.5" : "grid-cols-4 gap-2")}>
+    <dl className={cx("grid w-full", compact ? "grid-cols-2 gap-1.5" : "grid-cols-4 gap-2")}>
       {COUNTERS.map((k) => {
         const v = c[k.key];
         return (
           <div
             key={k.key}
             className={cx(
-              "flex flex-col rounded-10 border bg-bg-surface transition-colors duration-300",
-              compact ? "gap-0 px-2 py-1.5" : "gap-0.5 px-3 py-2",
+              "flex rounded-10 border bg-bg-surface transition-colors duration-300",
+              compact ? "flex-row items-baseline justify-between gap-2 px-2.5 py-1.5" : "flex-col gap-0.5 px-3 py-2",
               v > 0 ? "border-border-default" : "border-transparent",
             )}
           >
-            <dt className={cx("text-text-tertiary", compact ? "text-[10px] leading-[13px]" : "text-caption")}>{k.label}</dt>
+            <dt className={cx("text-text-tertiary", compact ? "min-w-0 truncate text-[11px] leading-4" : "text-caption")}>
+              {compact ? k.labelShort : k.label}
+            </dt>
             <dd
               className={cx(
                 "transition-colors duration-300",
-                compact ? "text-label-m" : "text-h4",
+                compact ? "shrink-0 text-label-m tabular-nums" : "text-h4",
                 v > 0 ? "text-text-primary" : "text-text-tertiary",
               )}
             >
@@ -203,10 +205,14 @@ function TimeRow({ active }: { active: number }) {
 }
 
 function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean; compact?: boolean }) {
+  // Compact (mobile) cards keep their chips expanded: only one card is visible at a time and the
+  // pinned panel needs a constant height, so nothing may grow after ScrollTrigger measured it.
+  const expanded = isActive || compact;
   return (
     <article
       className={cx(
-        "flex gap-4 rounded-16 p-4 transition-[background-color,box-shadow,border-color] duration-300",
+        "flex gap-4 rounded-16 transition-[background-color,box-shadow,border-color] duration-300",
+        compact ? "p-3" : "p-4",
         isActive
           ? "border border-border-default bg-bg-surface shadow-[0_8px_24px_-8px_rgba(0,0,0,0.06)]"
           : "border border-transparent bg-bg-muted",
@@ -221,8 +227,8 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
         <p className={cx("text-text-secondary", compact ? "text-body-s" : "text-body-m")}>{s.text}</p>
         <div
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
-          style={{ gridTemplateRows: isActive ? "1fr" : "0fr", opacity: isActive ? 1 : 0 }}
-          aria-hidden={!isActive}
+          style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
+          aria-hidden={!expanded}
         >
           <ul className="flex flex-wrap gap-1.5 overflow-hidden lg:gap-2">
             {s.steps.map((t) => (
@@ -281,7 +287,7 @@ export function OfficeDay() {
               start: () => {
                 if (!desktop) {
                   const fit = window.innerHeight - panel.offsetHeight - 12;
-                  return `top ${Math.max(72, Math.min(96, fit))}px`;
+                  return `top ${Math.max(64, Math.min(96, fit))}px`;
                 }
                 const free = window.innerHeight - panel.offsetHeight;
                 return `top ${Math.max(88, free / 2)}px`;
@@ -370,7 +376,7 @@ export function OfficeDay() {
             </div>
 
             {/* Mobile */}
-            <div className="office-mobile flex flex-col items-center gap-3 lg:hidden">
+            <div className="office-mobile flex flex-col items-center gap-2.5 lg:hidden">
               <Dashboard active={active} tipId={`${tipId}-m`} sizes="100vw" />
               <DayCounters active={active} compact />
               <TimeRow active={active} />

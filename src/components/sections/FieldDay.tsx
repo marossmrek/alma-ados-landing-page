@@ -135,11 +135,14 @@ function TimeRow({ active }: { active: number }) {
 }
 
 function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean; compact?: boolean }) {
+  // Compact (mobile) cards keep their chips expanded: only one card is visible at a time and the
+  // pinned panel needs a constant height, so nothing may grow after ScrollTrigger measured it.
+  const expanded = isActive || compact;
   return (
     <article
       className={cx(
         "scrolly-card flex gap-4 rounded-16 transition-[background-color,box-shadow,border-color] duration-300",
-        "p-4",
+        compact ? "p-3" : "p-4",
         isActive
           ? "border border-border-default bg-bg-surface shadow-[0_8px_24px_-8px_rgba(0,0,0,0.06)]"
           : "border border-transparent bg-bg-muted",
@@ -155,8 +158,8 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
         {/* Steps expand only for the active stop, so the pinned panel stays short */}
         <div
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
-          style={{ gridTemplateRows: isActive ? "1fr" : "0fr", opacity: isActive ? 1 : 0 }}
-          aria-hidden={!isActive}
+          style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
+          aria-hidden={!expanded}
         >
           <ul className="flex flex-wrap gap-1.5 overflow-hidden lg:gap-2">
             {s.steps.map((t) => (
@@ -229,7 +232,7 @@ export function FieldDay() {
               start: () => {
                 if (!desktop) {
                   const fit = window.innerHeight - panel.offsetHeight - 12;
-                  return `top ${Math.max(72, Math.min(96, fit))}px`;
+                  return `top ${Math.max(64, Math.min(96, fit))}px`;
                 }
                 const free = window.innerHeight - panel.offsetHeight;
                 return `top ${Math.max(88, free / 2)}px`;
@@ -330,7 +333,7 @@ export function FieldDay() {
             </div>
 
             {/* Mobile: pinned device on top, timeline and a single stop below it (all stops stacked with reduced motion) */}
-            <div className="scrolly-mobile flex flex-col items-center gap-3 lg:hidden">
+            <div className="scrolly-mobile flex flex-col items-center gap-2.5 lg:hidden">
               {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones */}
               <div className="flex min-h-[min(400px,42vh)] w-full max-w-[360px] items-center">
                 <DeviceStack
