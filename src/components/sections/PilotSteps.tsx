@@ -13,7 +13,7 @@ const STEPS = [
     number: "02",
     title: "Zapojíme vás do vývoja",
     description:
-      "Budeme s vami konzultovať návrhy workflow a priebežne vám ukazovať pripravovaný produkt.",
+      "Budeme s vami konzultovať, ako má práca v systéme prebiehať, a priebežne vám ukazovať pripravovaný produkt.",
   },
   {
     number: "03",

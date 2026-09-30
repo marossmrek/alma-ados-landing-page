@@ -1,13 +1,14 @@
 import { CheckItem } from "@/components/ui/CheckItem";
 
 const NEED = [
-  "Praktickú spätnú väzbu k návrhom workflow a obrazoviek",
+  "Praktickú spätnú väzbu k návrhom obrazoviek a pracovných postupov",
   "Občasné konzultácie v rozsahu, na ktorom sa dohodneme",
   "Vysvetlenie, ako dnes reálne prebieha plánovanie, dokumentácia a vykazovanie",
   "Otestovanie vybraných verzií produktu, keď budú pripravené",
 ];
 
 const GAIN = [
+  "Bezplatné používanie systému počas pilotu aj istý čas po spustení",
   "Priamy vplyv na to, ako bude produkt fungovať",
   "Skorý prístup k prototypom a pilotným verziám",
   "Možnosť navrhovať zlepšenia podľa vlastnej praxe",
@@ -36,7 +37,7 @@ export function Expectations() {
           <div className="flex flex-col gap-2">
             <h2 className="text-h3 text-text-inverse">Čo pilotný partner získa</h2>
             <p className="text-body-m text-text-inverse-muted">
-              Podmienky spolupráce po spustení dohodneme individuálne.
+              Dĺžku bezplatného obdobia a ďalšie podmienky dohodneme individuálne.
             </p>
           </div>
           <ul className="flex flex-col gap-3.5">
