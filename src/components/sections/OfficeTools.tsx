@@ -6,27 +6,29 @@ import { Badge } from "@/components/ui/Badge";
 import { CheckItem } from "@/components/ui/CheckItem";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
-/* More parts of the web app (AI patient intake, planning, statistics) and a note on migration. Continues "V kancelárii". */
+/* More parts of the web app (today overview, planning, AI patient intake, statistics) and a note on migration. Continues "V kancelárii". */
 const TOOLS: {
   title: string;
   text: string;
   points: string[];
   note?: { icon: IconName; text: string };
   screen: string;
+  /* Pixel height at 2400 px width (the Dnes capture is a little shorter than the others) */
+  height?: number;
   alt: string;
 }[] = [
   {
-    title: "Nový pacient z dokumentu",
-    text: "Administrátor nahrá alebo mobilom odfotí návrh lekára (indikáciu), prepúšťaciu správu alebo kartičku poistenca. AI z dokumentov predvyplní údaje nového pacienta.",
+    title: "Prehľad dňa",
+    text: "Modul Dnes ukáže kancelárii stav dňa na jednej obrazovke: koľko návštev je naplánovaných, čo čaká na schválenie a čo treba vyriešiť.",
     points: [
-      "Osobné údaje a poisťovňa",
-      "Ošetrujúci lekár, platnosť indikácie a diagnózy",
-      "Výkony ako návrh plánu starostlivosti",
-      "Nič sa neuloží, kým to administrátor neskontroluje",
+      "Návštevy dnes, na schválenie a vrátené sestrám",
+      "Postup každej sestry a jej posledné spojenie",
+      "Mapa, kde sú sestry podľa poslednej návštevy",
+      "Upozornenia, ktoré treba vyriešiť",
     ],
-    note: { icon: "shield-check", text: "Dokumenty spracúva AI v EÚ a nepoužívajú sa na trénovanie." },
-    screen: "/images/web-intake-2610.png",
-    alt: "Webová aplikácia, Nový pacient z dokumentu: nahratie dokumentov pacienta a zoznam údajov, ktoré AI predvyplní",
+    screen: "/images/web-today-2610.png",
+    height: 1607,
+    alt: "Webová aplikácia, Dnes: počty návštev, schválení a upozornení, sestry dnes s postupom a spojením a mapa sestier",
   },
   {
     title: "Plánovanie návštev",
@@ -39,6 +41,19 @@ const TOOLS: {
     ],
     screen: "/images/web-planning-2610.png",
     alt: "Webová aplikácia, Plánovanie: týždeň návštev rozdelený podľa sestier s tlačidlami Navrhnúť týždeň podľa plánu a Pridať neprítomnosť",
+  },
+  {
+    title: "Nový pacient z dokumentu",
+    text: "Administrátor nahrá alebo mobilom odfotí návrh lekára (indikáciu), prepúšťaciu správu alebo kartičku poistenca. AI z dokumentov predvyplní údaje nového pacienta.",
+    points: [
+      "Osobné údaje a poisťovňa",
+      "Ošetrujúci lekár, platnosť indikácie a diagnózy",
+      "Výkony ako návrh plánu starostlivosti",
+      "Nič sa neuloží, kým to administrátor neskontroluje",
+    ],
+    note: { icon: "shield-check", text: "Dokumenty spracúva AI v EÚ a nepoužívajú sa na trénovanie." },
+    screen: "/images/web-intake-2610.png",
+    alt: "Webová aplikácia, Nový pacient z dokumentu: nahratie dokumentov pacienta a zoznam údajov, ktoré AI predvyplní",
   },
   {
     title: "Štatistiky",
@@ -56,12 +71,12 @@ const TOOLS: {
 
 export function OfficeTools() {
   return (
-    <section aria-label="Nový pacient, plánovanie a štatistiky" className="pb-12 lg:pb-32">
+    <section aria-label="Prehľad dňa, plánovanie, nový pacient a štatistiky" className="pb-12 lg:pb-32">
       <div className="container-page flex flex-col gap-10 lg:gap-16">
         <SectionHeader
           eyebrow="Administratíva"
-          title="Od nového pacienta po plán návštev a štatistiky."
-          lead="Ďalšie časti webovej aplikácie, ktoré dnes testujeme a dolaďujeme: príjem nového pacienta z dokumentu, plánovanie návštev a štatistiky agentúry."
+          title="Prehľad dňa, plán návštev, nový pacient a štatistiky."
+          lead="Ďalšie časti webovej aplikácie, ktoré dnes testujeme a dolaďujeme: prehľad dňa, plánovanie návštev, príjem nového pacienta z dokumentu a štatistiky agentúry."
         />
 
         <div className="flex flex-col gap-12 lg:gap-20">
@@ -76,7 +91,7 @@ export function OfficeTools() {
                     src={t.screen}
                     alt={t.alt}
                     width={2400}
-                    height={1633}
+                    height={t.height ?? 1633}
                     sizes="(min-width: 1280px) 680px, (min-width: 1024px) 56vw, 100vw"
                     className="h-auto w-full"
                   />
