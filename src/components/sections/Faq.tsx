@@ -25,11 +25,11 @@ const FAQ = [
   },
   {
     q: "Bude aplikácia fungovať aj bez signálu?",
-    a: "S tým počítame od začiatku, v teréne je práca bez signálu bežná. Záznamy z návštevy sa uložia v telefóne a odošlú sa, keď je spojenie dostupné. Presné správanie offline režimu chceme doladiť s pilotnými partnermi.",
+    a: "Áno. Záznamy z návštevy sa uložia v telefóne a odošlú sa, keď je signál. V teréne je práca bez signálu bežná, preto správanie offline režimu ešte dolaďujeme s pilotnými partnermi.",
   },
   {
     q: "Bude systém napojený na poisťovne?",
-    a: "V prvej verzii nie. Pripravíme skontrolované výkony do podoby, ktorú potrebujete pre vykazovanie poisťovni. Priame prepojenie s poisťovňami je plánované na neskôr a jeho podobu chceme nastaviť podľa skúseností z pilotu.",
+    a: "Priame prepojenie s poisťovňami systém nemá. Alma zo schválených návštev pripraví podklady na vykazovanie poisťovniam.",
   },
 ];
 

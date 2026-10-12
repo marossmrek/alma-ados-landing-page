@@ -49,7 +49,7 @@
 
   /* status/*: warning in Figma #b4570a (4.33:1 on warning-soft) → #aa5209 to reach 4.5:1 */
   --color-status-warning: #aa5209;
-  --color-status-warning-on-dark: #d97b2b; /* lighter shade for text on bg/dark (the „NÁHĽAD" badge) */
+  --color-status-warning-on-dark: #d97b2b; /* lighter shade for warning text on bg/dark */
   --color-status-warning-soft: #fdf0de;
   --color-status-success: #3a8a2e;
   --color-status-success-soft: #eaf5e6;

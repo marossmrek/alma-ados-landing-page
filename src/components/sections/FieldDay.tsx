@@ -9,6 +9,7 @@ import { cx } from "@/lib/cx";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
 import { PhoneFrame } from "@/components/ui/Phone";
+import { BrowserFrame } from "@/components/ui/Browser";
 import { Badge } from "@/components/ui/Badge";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
@@ -18,38 +19,38 @@ const STOPS = [
   {
     time: "07:30",
     title: "Denný plán",
-    text: "Ráno sestra vidí trasu, poradie návštev a plánovanú starostlivosť. Potrebné informácie má na jednom mieste.",
-    steps: ["Denný plán návštev", "Informácie o pacientovi", "Plánovaná starostlivosť"],
+    text: "Ráno sestra otvorí Dnes: kto je teraz na rade, koľko návštev zostáva a dnešná trasa. Potrebné informácie má na jednom mieste.",
+    steps: ["Teraz na rade", "Dnešná trasa", "Navigácia k pacientovi"],
     device: "phone",
-    screen: "/images/phone-plan.png",
-    alt: "Obrazovka mobilnej aplikácie: dnešný plán návštev s mapou trasy a ďalšou zastávkou",
+    screen: "/images/phone-today-2610.png",
+    alt: "Aplikácia pre sestry, obrazovka Dnes: návšteva, ktorá je teraz na rade, prehľad dňa a dnešná trasa",
   },
   {
     time: "09:10",
     title: "Návšteva",
-    text: "Pri pacientovi má sestra plán starostlivosti pred sebou a zapisuje priamo, čo urobila.",
-    steps: ["Navigácia k pacientovi", "Vykonané úkony", "Merania"],
+    text: "Počas návštevy má sestra pred sebou plánované výkony a dekurz. Odškrtne, čo urobila, a priebeh môže tlačidlom Nadiktovať povedať hlasom.",
+    steps: ["Plánované výkony", "Dekurz", "Nadiktovať"],
     device: "phone",
-    screen: "/images/phone-visit.png",
-    alt: "Obrazovka mobilnej aplikácie: prebiehajúca návšteva u pacienta so zoznamom výkonov",
+    screen: "/images/phone-visit-ongoing-2610.png",
+    alt: "Aplikácia pre sestry: prebiehajúca návšteva s výkonmi, dekurzom a tlačidlami Nadiktovať a Dokončiť návštevu",
   },
   {
     time: "09:25",
-    title: "Dokumentácia na mieste",
-    text: "Rana, poznámky, výnimky. Hlasom alebo klávesnicou, aj bez signálu. Návšteva sa uzavrie jedným krokom.",
-    steps: ["Dokumentácia rany", "Hlasový zápis", "Dokončenie návštevy"],
+    title: "Dokumentácia rany",
+    text: "Pri preväze aplikácia porovná ranu s minulým preväzom a ukáže, ako sa mení jej plocha. Záznam sa uloží v telefóne aj bez signálu.",
+    steps: ["Minulý preväz", "Vývoj plochy rany", "Aj bez signálu"],
     device: "phone",
-    screen: "/images/phone-wound.png",
-    alt: "Obrazovka mobilnej aplikácie: dokumentácia rany s rozmermi, ošetrením a fotodokumentáciou",
+    screen: "/images/phone-wound-2610.png",
+    alt: "Aplikácia pre sestry: preväz rany s rozmermi z minulého preväzu a poklesom plochy rany",
   },
   {
     time: "16:00",
     title: "Kancelária má prehľad",
-    text: "Návštevy, vykonaná starostlivosť a dokumentácia sú priebežne dostupné v systéme na kontrolu a ďalšie spracovanie.",
-    steps: ["Kontrola záznamov", "Výnimky na doplnenie", "Podklady na vykazovanie"],
+    text: "Dokončené návštevy prichádzajú do Vykazovania. Kancelária ich skontroluje a zo schválených pripraví podklady pre poisťovne.",
+    steps: ["Návštevy na kontrolu", "Upozornenia", "Podklady pre poisťovne"],
     device: "web",
-    screen: "/images/dashboard-v2.png",
-    alt: "Webový prehľad pre vedúcu sestru a administratívu: schvaľovanie návštev s tabuľkou a detailom pacienta",
+    screen: "/images/web-reporting-2610.png",
+    alt: "Webová aplikácia, Vykazovanie: návštevy čakajúce na kontrolu s výkonmi a stavom kontroly",
   },
 ] as const;
 
@@ -96,17 +97,19 @@ function DeviceStack({
         </PhoneFrame>
       </div>
       <div
-        className="day-web col-start-1 row-start-1 w-full overflow-hidden rounded-12 bg-bg-surface shadow-[0_24px_48px_-12px_rgba(20,23,31,0.18)] ring-1 ring-border-default"
+        className="day-web col-start-1 row-start-1 w-full rounded-12 shadow-[0_24px_48px_-12px_rgba(20,23,31,0.18)]"
         aria-hidden={!webActive}
       >
-        <Image
-          src={WEB_STOP.screen}
-          alt={WEB_STOP.alt}
-          width={2400}
-          height={1588}
-          sizes={webSizes}
-          className="h-auto w-full"
-        />
+        <BrowserFrame>
+          <Image
+            src={WEB_STOP.screen}
+            alt={WEB_STOP.alt}
+            width={2400}
+            height={1633}
+            sizes={webSizes}
+            className="h-auto w-full"
+          />
+        </BrowserFrame>
       </div>
     </div>
   );
@@ -282,7 +285,7 @@ export function FieldDay() {
         <SectionHeader
           eyebrow="V teréne"
           title="Jeden deň sestry. Od ranného plánu po hotové podklady."
-          lead="Takto by vyzeral bežný deň s Alma ADOS: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
+          lead="Takto vyzerá bežný deň s Alma ADOS: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
         />
 
         {/* Scrolly panel: block wrapper so the pin-spacer is not a flex item */}
@@ -300,7 +303,7 @@ export function FieldDay() {
                       <span className="text-text-tertiary">·</span>
                       <span className="text-text-secondary">{STOPS[active].device === "web" ? "Kancelária" : "V teréne"}</span>
                     </span>
-                    <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
+                    <PreviewLabel />
                   </div>
                   <div className="flex min-h-[560px] w-full items-center">
                     <DeviceStack
@@ -350,12 +353,12 @@ export function FieldDay() {
                 {/* Tiny corner tag: sits in the free corner of the gray panel, never over the device */}
                 <span
                   className={cx(
-                    "absolute left-0 top-0 z-10 flex flex-col rounded-8 bg-bg-dark px-1.5 py-1 text-[9px] leading-[12px] transition-opacity duration-300",
+                    "absolute left-0 top-0 z-10 flex max-w-[64px] flex-col rounded-8 bg-bg-dark px-1.5 py-1 text-[9px] leading-[12px] text-text-inverse transition-opacity duration-300",
                     STOPS[active].device === "web" && "opacity-0",
                   )}
                 >
-                  <span className="font-semibold tracking-[0.06em] text-status-warning-on-dark">NÁHĽAD</span>
-                  <span className="text-text-inverse">koncept</span>
+                  <span>Ukážkové</span>
+                  <span>údaje</span>
                 </span>
                 {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones.
                   svh (not vh): mobile Chrome resizes vh when its toolbar collapses, which would grow the panel
@@ -409,9 +412,8 @@ export function FieldDay() {
             ))}
           </ul>
           <p className="gsap-reveal text-body-s text-text-secondary">
-            Tieto funkcie sú vo fáze návrhu a vývoja. Ich rozsah a finálnu podobu chceme nastaviť podľa
-            skúseností pilotných partnerov, vrátane práce bez signálu, ktorú v teréne považujeme za
-            nevyhnutnú.
+            Aplikácia pre sestry beží na iOS aj Androide. Tieto funkcie dnes testujeme a dolaďujeme, ich
+            finálnu podobu nastavíme podľa skúseností pilotných partnerov, vrátane práce bez signálu.
           </p>
         </div>
       </div>

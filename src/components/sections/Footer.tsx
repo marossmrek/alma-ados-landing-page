@@ -47,7 +47,7 @@ export function Footer() {
         </div>
         <div className="flex flex-col-reverse gap-2 border-t border-border-dark pt-6 text-caption text-text-tertiary-on-dark lg:flex-row lg:items-center lg:justify-between">
           <p>© 2026 {CONTACT.company} Všetky práva vyhradené.</p>
-          <p>Produkt je vo fáze vývoja. Zobrazené obrazovky sú koncepty, nie hotová aplikácia.</p>
+          <p>Produkt je vo fáze vývoja. Zobrazené obrazovky sú z testovacej verzie s ukážkovými údajmi.</p>
         </div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import { HowItWorks } from "@/components/sections/HowItWorks";
 import { FieldDay } from "@/components/sections/FieldDay";
 import { AiDocumentation } from "@/components/sections/AiDocumentation";
 import { OfficeDay } from "@/components/sections/OfficeDay";
+import { OfficeTools } from "@/components/sections/OfficeTools";
 import { Calculator } from "@/components/sections/Calculator";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { PilotSteps } from "@/components/sections/PilotSteps";
@@ -24,6 +25,7 @@ export default function Home() {
         <FieldDay />
         <AiDocumentation />
         <OfficeDay />
+        <OfficeTools />
         <Calculator />
         <Roadmap />
         <PilotSteps />

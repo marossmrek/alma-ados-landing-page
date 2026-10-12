@@ -13,8 +13,8 @@ export const BRAND = {
   siteUrl: "https://adosalma.sk",
   /** App address in mockups */
   appHost: "app.adosalma.sk",
-  /** Text in the browser mockup's address bar */
-  conceptUrl: "app.adosalma.sk · koncept",
+  /** Text in the address bar of the browser frame around real screenshots (demo agency, no real data) */
+  mockAddress: "Ukážkové údaje",
 } as const;
 
 /* Mark: two palms holding a person, 24 × 24 grid, stroke via currentColor */
