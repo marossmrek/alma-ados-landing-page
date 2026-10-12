@@ -216,7 +216,7 @@ export function AiDocumentation() {
             <br className="hidden lg:block" /> s kontrolou sestry.
           </h2>
           <p className="gsap-reveal max-w-[680px] text-body-m text-text-inverse-muted lg:text-body-l">
-            Po návšteve môže sestra nadiktovať priebeh starostlivosti. AI pripraví štruktúrovaný návrh
+            Počas návštevy môže sestra tlačidlom Nadiktovať povedať priebeh starostlivosti. AI pripraví štruktúrovaný návrh
             záznamu a upozorní na chýbajúce údaje. Sestra výsledok skontroluje, upraví a až následne
             potvrdí.
           </p>
@@ -237,7 +237,7 @@ export function AiDocumentation() {
                   <Icon name="mic" className="relative size-[18px]" />
                 </span>
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-label-m text-text-inverse">Po návšteve · nahrávanie</p>
+                  <p className="text-label-m text-text-inverse">Nadiktovať · nahrávanie</p>
                   <p className="text-caption text-text-inverse-muted">Ján Kováč · 08:45, 25 min</p>
                 </div>
               </div>

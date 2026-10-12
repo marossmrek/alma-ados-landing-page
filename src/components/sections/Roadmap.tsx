@@ -6,8 +6,8 @@ type Step = { title: string; meta: string; state: "done" | "current" | "todo" };
 
 const STEPS: Step[] = [
   { title: "Návrh a dizajn", meta: "hotovo", state: "done" },
-  { title: "Vývoj", meta: "2026", state: "current" },
-  { title: "Pilotné overenie", meta: "2026 / 2027", state: "todo" },
+  { title: "Vývoj", meta: "2026", state: "done" },
+  { title: "Pilotné overenie", meta: "2026 / 2027", state: "current" },
   { title: "Verejné spustenie", meta: "2027", state: "todo" },
 ];
 
@@ -36,7 +36,7 @@ export function Roadmap() {
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-label-m text-text-primary">Kde sme dnes</h3>
               {/* Update the date with every roadmap change */}
-              <p className="text-caption text-text-tertiary">Naposledy aktualizované: 17. 9. 2026</p>
+              <p className="text-caption text-text-tertiary">Naposledy aktualizované: 12. 10. 2026</p>
             </div>
             <ol className="relative flex flex-col gap-6 sm:grid sm:grid-cols-4 sm:gap-4">
               {/* Line + progress (desktop) */}
@@ -47,7 +47,7 @@ export function Roadmap() {
               <span
                 aria-hidden="true"
                 data-fx="line"
-                className="absolute left-[30px] top-[13px] hidden h-0.5 w-[calc(25%+4px)] bg-accent sm:block"
+                className="absolute left-[30px] top-[13px] hidden h-0.5 w-[calc(50%+8px)] bg-accent sm:block"
               />
               {STEPS.map((s, i) => (
                 <li key={s.title} className="relative flex items-start gap-3 sm:flex-col sm:gap-2.5">

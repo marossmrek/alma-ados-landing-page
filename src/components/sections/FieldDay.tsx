@@ -9,47 +9,60 @@ import { cx } from "@/lib/cx";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
 import { PhoneFrame } from "@/components/ui/Phone";
+import { BrowserFrame } from "@/components/ui/Browser";
 import { Badge } from "@/components/ui/Badge";
 import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 
-/* One day of a nurse in four stops. The first three on the phone in the field, the fourth on the web in the office. */
+/*
+  One visit in five steps, the same for any procedure: four screens of the nurse app, then the web in the office.
+  Steps are numbered, not timed, so the section reads as "how a visit is documented", not as one particular morning.
+*/
 const STOPS = [
   {
-    time: "07:30",
-    title: "Denný plán",
-    text: "Ráno sestra vidí trasu, poradie návštev a plánovanú starostlivosť. Potrebné informácie má na jednom mieste.",
-    steps: ["Denný plán návštev", "Informácie o pacientovi", "Plánovaná starostlivosť"],
+    step: "01",
+    title: "Plán návštev",
+    text: "Sestra má v telefóne svoje návštevy na deň aj na týždeň: poradie, pacientov a plánované výkony.",
+    steps: ["Plán na deň a týždeň", "Poradie návštev", "Plánované výkony"],
     device: "phone",
-    screen: "/images/phone-plan.png",
-    alt: "Obrazovka mobilnej aplikácie: dnešný plán návštev s mapou trasy a ďalšou zastávkou",
+    screen: "/images/phone-plan-2610.png",
+    alt: "Aplikácia pre sestry, Plán návštev: dnešné návštevy v poradí s časmi, pacientmi a výkonmi",
   },
   {
-    time: "09:10",
-    title: "Návšteva",
-    text: "Pri pacientovi má sestra plán starostlivosti pred sebou a zapisuje priamo, čo urobila.",
-    steps: ["Navigácia k pacientovi", "Vykonané úkony", "Merania"],
+    step: "02",
+    title: "Pred návštevou",
+    text: "Detail návštevy ukáže, čo sa dnes očakáva: výkony, posledné merania, upozornenia k pacientovi a platnosť indikácie.",
+    steps: ["Očakávané výkony", "Upozornenia k pacientovi", "Navigácia"],
     device: "phone",
-    screen: "/images/phone-visit.png",
-    alt: "Obrazovka mobilnej aplikácie: prebiehajúca návšteva u pacienta so zoznamom výkonov",
+    screen: "/images/phone-visit-detail-2610.png",
+    alt: "Aplikácia pre sestry: detail návštevy pred začatím s plánovanými výkonmi, poslednými meraniami a tlačidlom Začať návštevu",
   },
   {
-    time: "09:25",
-    title: "Dokumentácia na mieste",
-    text: "Rana, poznámky, výnimky. Hlasom alebo klávesnicou, aj bez signálu. Návšteva sa uzavrie jedným krokom.",
-    steps: ["Dokumentácia rany", "Hlasový zápis", "Dokončenie návštevy"],
+    step: "03",
+    title: "Zápis výkonov",
+    text: "Počas návštevy sestra odškrtne vykonané výkony a doplní dekurz. Priebeh môže povedať hlasom cez Nadiktovať a aplikácia ukáže, čo ešte chýba.",
+    steps: ["Vykonané výkony", "Dekurz", "Nadiktovať"],
     device: "phone",
-    screen: "/images/phone-wound.png",
-    alt: "Obrazovka mobilnej aplikácie: dokumentácia rany s rozmermi, ošetrením a fotodokumentáciou",
+    screen: "/images/phone-visit-ongoing-2610.png",
+    alt: "Aplikácia pre sestry: prebiehajúca návšteva s výkonmi, dekurzom a tlačidlami Nadiktovať a Dokončiť návštevu",
   },
   {
-    time: "16:00",
+    step: "04",
+    title: "Formulár výkonu",
+    text: "Každý výkon má svoj formulár s údajmi, ktoré k nemu patria. Pri preväze rany napríklad rozmery porovnané s minulým preväzom. Uloží sa aj bez signálu.",
+    steps: ["Údaje podľa výkonu", "Porovnanie s minulou návštevou", "Aj bez signálu"],
+    device: "phone",
+    screen: "/images/phone-wound-2610.png",
+    alt: "Aplikácia pre sestry: formulár výkonu preväz rany s rozmermi z minulého preväzu a poklesom plochy rany",
+  },
+  {
+    step: "05",
     title: "Kancelária má prehľad",
-    text: "Návštevy, vykonaná starostlivosť a dokumentácia sú priebežne dostupné v systéme na kontrolu a ďalšie spracovanie.",
-    steps: ["Kontrola záznamov", "Výnimky na doplnenie", "Podklady na vykazovanie"],
+    text: "Dokončené návštevy prichádzajú do Vykazovania. Kancelária ich skontroluje a zo schválených pripraví podklady pre poisťovne.",
+    steps: ["Návštevy na kontrolu", "Upozornenia", "Podklady pre poisťovne"],
     device: "web",
-    screen: "/images/dashboard-v2.png",
-    alt: "Webový prehľad pre vedúcu sestru a administratívu: schvaľovanie návštev s tabuľkou a detailom pacienta",
+    screen: "/images/web-reporting-2610.png",
+    alt: "Webová aplikácia, Vykazovanie: návštevy čakajúce na kontrolu s výkonmi a stavom kontroly",
   },
 ] as const;
 
@@ -96,35 +109,37 @@ function DeviceStack({
         </PhoneFrame>
       </div>
       <div
-        className="day-web col-start-1 row-start-1 w-full overflow-hidden rounded-12 bg-bg-surface shadow-[0_24px_48px_-12px_rgba(20,23,31,0.18)] ring-1 ring-border-default"
+        className="day-web col-start-1 row-start-1 w-full rounded-12 shadow-[0_24px_48px_-12px_rgba(20,23,31,0.18)]"
         aria-hidden={!webActive}
       >
-        <Image
-          src={WEB_STOP.screen}
-          alt={WEB_STOP.alt}
-          width={2400}
-          height={1588}
-          sizes={webSizes}
-          className="h-auto w-full"
-        />
+        <BrowserFrame>
+          <Image
+            src={WEB_STOP.screen}
+            alt={WEB_STOP.alt}
+            width={2400}
+            height={1633}
+            sizes={webSizes}
+            className="h-auto w-full"
+          />
+        </BrowserFrame>
       </div>
     </div>
   );
 }
 
-/* Compact timeline (mobile): four times in a row, the active one highlighted */
+/* Compact timeline (mobile): step numbers in a row, the active one highlighted */
 function TimeRow({ active }: { active: number }) {
   return (
     <ol className="flex w-full items-center gap-1.5" aria-hidden="true">
       {STOPS.map((s, i) => (
-        <li key={s.time} className={cx("flex items-center gap-1.5", i < STOPS.length - 1 && "min-w-0 flex-1")}>
+        <li key={s.step} className={cx("flex items-center gap-1.5", i < STOPS.length - 1 && "min-w-0 flex-1")}>
           <span
             className={cx(
               "shrink-0 rounded-full px-1.5 py-0.5 text-label-s tabular-nums transition-colors duration-300 sm:px-2",
               i === active ? "bg-accent text-text-inverse" : i < active ? "text-accent-text" : "text-text-secondary",
             )}
           >
-            {s.time}
+            {s.step}
           </span>
           {i < STOPS.length - 1 && (
             <span className={cx("h-px min-w-1.5 flex-1", i < active ? "bg-accent" : "bg-border-default")} />
@@ -136,7 +151,7 @@ function TimeRow({ active }: { active: number }) {
 }
 
 function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean; compact?: boolean }) {
-  // Compact (mobile) cards keep their chips expanded: only one card is visible at a time and the
+  // Compact (mobile) cards keep everything expanded: only one card is visible at a time and the
   // pinned panel needs a constant height, so nothing may grow after ScrollTrigger measured it.
   const expanded = isActive || compact;
   return (
@@ -152,28 +167,31 @@ function StopCard({ s, isActive, compact = false }: { s: Stop; isActive: boolean
     >
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <h3 className={cx("flex items-baseline gap-3", compact ? "text-label-m" : "text-h4")}>
-          {compact && <span className="text-accent-text tabular-nums">{s.time}</span>}
+          {compact && <span className="text-accent-text tabular-nums">{s.step}</span>}
           <span className={isActive ? "text-text-primary" : "text-text-secondary"}>{s.title}</span>
         </h3>
-        <p className={cx("text-text-secondary", compact ? "text-body-s" : "text-body-m")}>{s.text}</p>
-        {/* Steps expand only for the active stop, so the pinned panel stays short */}
+        {compact && <p className="text-body-s text-text-secondary">{s.text}</p>}
+        {/* Desktop: text and steps expand only for the active stop, so five stops fit a laptop screen.
+          Collapsed content stays in the accessibility tree (no aria-hidden), it is only visually folded. */}
         <div
           data-steps
           className="grid transition-[grid-template-rows,opacity] duration-300 motion-reduce:transition-none"
           style={{ gridTemplateRows: expanded ? "1fr" : "0fr", opacity: expanded ? 1 : 0 }}
-          aria-hidden={!expanded}
         >
-          <ul className="flex flex-wrap gap-1.5 overflow-hidden lg:gap-2">
-            {s.steps.map((t) => (
-              <li
-                key={t}
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft py-1 pl-2 pr-2.5 text-label-s text-accent-text lg:py-1.5 lg:pl-2.5 lg:pr-3"
-              >
-                <Icon name="check" className="size-3" strokeWidth={2.25} />
-                {t}
-              </li>
-            ))}
-          </ul>
+          <div className="flex flex-col gap-3 overflow-hidden">
+            {!compact && <p className="text-body-m text-text-secondary">{s.text}</p>}
+            <ul className="flex flex-wrap gap-1.5 lg:gap-2">
+              {s.steps.map((t) => (
+                <li
+                  key={t}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft py-1 pl-2 pr-2.5 text-label-s text-accent-text lg:py-1.5 lg:pl-2.5 lg:pr-3"
+                >
+                  <Icon name="check" className="size-3" strokeWidth={2.25} />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </article>
@@ -247,27 +265,34 @@ export function FieldDay() {
                 const free = window.innerHeight - panel.offsetHeight;
                 return `top ${Math.max(88, free / 2)}px`;
               },
-              end: desktop ? "+=2000" : "+=1500",
+              end: desktop ? "+=2500" : "+=1900",
               pin: true,
               pinSpacing: true,
               scrub: 0.6,
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 const p = self.progress;
-                setActive(p < 0.2 ? 0 : p < 0.5 ? 1 : p < 0.8 ? 2 : 3);
+                setActive(Math.min(STOPS.length - 1, Math.floor(p * STOPS.length)));
               },
             },
           });
 
-          // Switch times match the 0.2 / 0.5 / 0.8 thresholds of the total 2.4 duration
-          tl.to(screens[0], { autoAlpha: 0, y: -12, duration: 0.3 }, 0.35)
-            .to(screens[1], { autoAlpha: 1, y: 0, duration: 0.3 }, 0.35)
-            .to(screens[1], { autoAlpha: 0, y: -12, duration: 0.3 }, 1.05)
-            .to(screens[2], { autoAlpha: 1, y: 0, duration: 0.3 }, 1.05)
-            .to(phone, { autoAlpha: 0, y: -16, scale: 0.96, duration: 0.3 }, 1.8)
-            .to(web, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35 }, 1.85)
-            .to({}, { duration: 0.2 }, 2.2);
-          if (progress) tl.to(progress, { scaleY: 1, duration: 2.4, ease: "none" }, 0);
+          // Equal segments per stop; each switch is centered on the boundary where setActive changes the card
+          const seg = 0.6;
+          const total = STOPS.length * seg;
+          for (let i = 1; i < screens.length; i++) {
+            const at = i * seg - 0.15;
+            tl.to(screens[i - 1], { autoAlpha: 0, y: -12, duration: 0.3 }, at).to(
+              screens[i],
+              { autoAlpha: 1, y: 0, duration: 0.3 },
+              at,
+            );
+          }
+          const toWeb = PHONE_STOPS.length * seg;
+          tl.to(phone, { autoAlpha: 0, y: -16, scale: 0.96, duration: 0.3 }, toWeb - 0.2)
+            .to(web, { autoAlpha: 1, y: 0, scale: 1, duration: 0.35 }, toWeb - 0.15)
+            .to({}, { duration: 0.2 }, total - 0.2);
+          if (progress) tl.to(progress, { scaleY: 1, duration: total, ease: "none" }, 0);
 
           return () => ScrollTrigger.removeEventListener("refreshInit", reserve);
         },
@@ -277,12 +302,12 @@ export function FieldDay() {
   );
 
   return (
-    <section id="pre-sestry" aria-label="Jeden deň sestry" className="bg-bg-surface py-12 lg:py-32">
+    <section id="pre-sestry" aria-label="Priebeh návštevy" className="bg-bg-surface py-12 lg:py-32">
       <div className="container-page flex flex-col gap-10 lg:gap-16">
         <SectionHeader
           eyebrow="V teréne"
-          title="Jeden deň sestry. Od ranného plánu po hotové podklady."
-          lead="Takto by vyzeral bežný deň s Alma ADOS: dokumentácia vzniká počas návštev na telefóne a kancelária ju má k dispozícii priebežne, bez zbytočného prepisovania."
+          title="Jedna návšteva. Od plánu po hotový záznam."
+          lead="Takto prebieha návšteva s Alma ADOS pri akomkoľvek výkone: záznam vzniká počas návštevy na telefóne a kancelária ho má k dispozícii priebežne, bez zbytočného prepisovania."
         />
 
         {/* Scrolly panel: block wrapper so the pin-spacer is not a flex item */}
@@ -295,12 +320,11 @@ export function FieldDay() {
                 <div className="flex w-[460px] shrink-0 flex-col items-center gap-4">
                   <div className="flex w-full items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2 rounded-8 bg-bg-surface py-1.5 pl-2.5 pr-3 text-label-s text-text-primary ring-1 ring-border-default">
-                      <Icon name="clock" className="size-4 text-accent" />
-                      <span className="tabular-nums">{STOPS[active].time}</span>
+                      <span className="tabular-nums">Krok {active + 1} z {STOPS.length}</span>
                       <span className="text-text-tertiary">·</span>
                       <span className="text-text-secondary">{STOPS[active].device === "web" ? "Kancelária" : "V teréne"}</span>
                     </span>
-                    <PreviewLabel>Koncept · ukážkové údaje</PreviewLabel>
+                    <PreviewLabel />
                   </div>
                   <div className="flex min-h-[560px] w-full items-center">
                     <DeviceStack
@@ -320,14 +344,14 @@ export function FieldDay() {
                     const isActive = i === active;
                     const done = i < active;
                     return (
-                      <li key={s.time} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
+                      <li key={s.step} className="grid grid-cols-[52px_24px_1fr] gap-x-2">
                         <span
                           className={cx(
                             "mt-[18px] text-label-m tabular-nums transition-colors duration-300",
                             isActive ? "text-accent-text" : "text-text-secondary",
                           )}
                         >
-                          {s.time}
+                          {s.step}
                         </span>
                         <span className="relative flex justify-center">
                           <span
@@ -350,12 +374,12 @@ export function FieldDay() {
                 {/* Tiny corner tag: sits in the free corner of the gray panel, never over the device */}
                 <span
                   className={cx(
-                    "absolute left-0 top-0 z-10 flex flex-col rounded-8 bg-bg-dark px-1.5 py-1 text-[9px] leading-[12px] transition-opacity duration-300",
+                    "absolute left-0 top-0 z-10 flex max-w-[64px] flex-col rounded-8 bg-bg-dark px-1.5 py-1 text-[9px] leading-[12px] text-text-inverse transition-opacity duration-300",
                     STOPS[active].device === "web" && "opacity-0",
                   )}
                 >
-                  <span className="font-semibold tracking-[0.06em] text-status-warning-on-dark">NÁHĽAD</span>
-                  <span className="text-text-inverse">koncept</span>
+                  <span>Ukážkové</span>
+                  <span>údaje</span>
                 </span>
                 {/* Device height follows the viewport so the pinned panel (incl. step chips) fits short phones.
                   svh (not vh): mobile Chrome resizes vh when its toolbar collapses, which would grow the panel
@@ -375,7 +399,7 @@ export function FieldDay() {
                     const isActive = reduced || i === active;
                     return (
                       <li
-                        key={s.time}
+                        key={s.step}
                         aria-hidden={!isActive}
                         className={cx(
                           !reduced && "col-start-1 row-start-1 transition-opacity duration-300",
@@ -390,7 +414,7 @@ export function FieldDay() {
               </div>
 
               <p className="sr-only" aria-live="polite">
-                {STOPS[active].time}: {STOPS[active].title}
+                Krok {active + 1}: {STOPS[active].title}
               </p>
             </div>
           </div>
@@ -409,9 +433,8 @@ export function FieldDay() {
             ))}
           </ul>
           <p className="gsap-reveal text-body-s text-text-secondary">
-            Tieto funkcie sú vo fáze návrhu a vývoja. Ich rozsah a finálnu podobu chceme nastaviť podľa
-            skúseností pilotných partnerov, vrátane práce bez signálu, ktorú v teréne považujeme za
-            nevyhnutnú.
+            Aplikácia pre sestry beží na iOS aj Androide. Tieto funkcie dnes testujeme a dolaďujeme, ich
+            finálnu podobu nastavíme podľa skúseností pilotných partnerov, vrátane práce bez signálu.
           </p>
         </div>
       </div>

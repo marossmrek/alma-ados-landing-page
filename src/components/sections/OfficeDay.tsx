@@ -8,6 +8,7 @@ import { reserveTimelineHeight } from "@/lib/timeline";
 import { cx } from "@/lib/cx";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
+import { BrowserFrame } from "@/components/ui/Browser";
 import { PlusField } from "@/components/ui/PlusField";
 import { Badge } from "@/components/ui/Badge";
 import { Chip } from "@/components/ui/Chip";
@@ -15,9 +16,9 @@ import { Counter } from "@/components/ui/Counter";
 import { Icon } from "@/components/ui/Icon";
 
 /*
-  Head nurse overview in three stops. Same language as "Jeden deň sestry" (FieldDay):
-  pinned panel, timeline, dashboard spotlight switched by scroll.
-  Area coordinates are in the 1200 × 794 mockup space (Figma "Browser · Backoffice").
+  Head nurse overview in three stops. Same language as "Priebeh návštevy" (FieldDay):
+  pinned panel, timeline, screenshot spotlight switched by scroll.
+  Area coordinates are in the 1200 × 816 space of the Vykazovanie screenshot (2400 × 1633 at 2×).
 */
 type Rect = { x: number; y: number; w: number; h: number };
 
@@ -25,130 +26,131 @@ const STOPS = [
   {
     time: "08:00",
     title: "Čo prišlo z terénu",
-    text: "Návštevy a záznamy z terénu sú priebežne dostupné v systéme. Vedúca vidí ich stav a položky, ktoré si vyžadujú pozornosť.",
-    steps: ["Prehľad návštev", "Stav záznamov", "Výnimky"],
-    tooltip: "7 záznamov na kontrolu",
-    tooltipShort: "7 na kontrolu",
+    text: "Návštevy zapísané v teréne prichádzajú priebežne do Vykazovania. Vedúca sestra vidí, čo čaká na kontrolu a pri ktorých návštevách je upozornenie.",
+    steps: ["Návštevy na kontrolu", "Plán a skutočnosť výkonov", "Upozornenia"],
+    tooltip: "82 návštev čaká na kontrolu",
+    tooltipShort: "82 na kontrolu",
     rects: [
-      { x: 216, y: 146, w: 430, h: 33 },
-      { x: 12, y: 144, w: 170, h: 29 },
+      { x: 214, y: 86, w: 164, h: 34 },
+      { x: 232, y: 151, w: 146, h: 32 },
     ] as Rect[],
-    counts: { caka: 7, schvalene: 0, vratene: 0, export: 0 },
+    counts: { caka: 82, upozornenie: 4, vratene: 0, schvalene: 128 },
   },
   {
     time: "10:30",
-    title: "Kontrola a výnimky",
-    text: "Neúplné alebo problémové záznamy systém zvýrazní. Vedúca ich môže skontrolovať a podľa potreby vrátiť sestre na doplnenie.",
-    steps: ["Zvýraznené výnimky", "Kontrola záznamu", "Vrátiť na doplnenie"],
-    tooltip: "Skontrolovať · chýba zápis S/O",
-    tooltipShort: "Chýba zápis S/O",
+    title: "Kontrola a schválenie",
+    text: "Hodnoty mimo normy a chýbajúce údaje systém zvýrazní. Vedúca sestra návštevu skontroluje, schváli alebo vráti sestre na doplnenie.",
+    steps: ["Hodnoty mimo normy", "Kontrola návštevy", "Vrátiť na doplnenie"],
+    tooltip: "Hodnota mimo normy · skontrolovať",
+    tooltipShort: "Mimo normy",
     rects: [
-      { x: 217, y: 351, w: 558, h: 96 },
-      { x: 795, y: 222, w: 380, h: 549 },
+      { x: 218, y: 404, w: 956, h: 151 },
+      { x: 380, y: 151, w: 107, h: 32 },
     ] as Rect[],
-    counts: { caka: 1, schvalene: 5, vratene: 1, export: 0 },
+    counts: { caka: 80, upozornenie: 2, vratene: 1, schvalene: 129 },
   },
   {
     time: "15:00",
-    title: "Podklady pre poisťovňu",
-    text: "Skontrolované údaje sú pripravené na ďalšie spracovanie a slúžia ako podklad pre vykazovanie zdravotným poisťovniam.",
-    steps: ["Skontrolované údaje", "Podklady pre vykazovanie", "Ďalšie spracovanie"],
-    tooltip: "Podklady pre vykazovanie · 6 skontrolovaných návštev",
-    tooltipShort: "Podklady · 6 návštev",
+    title: "Podklady pre poisťovne",
+    text: "Zo schválených návštev Alma pripraví podklady na vykazovanie zdravotným poisťovniam v časti Export pre poisťovne.",
+    steps: ["Schválené návštevy", "Export pre poisťovne", "Podklady na vykazovanie"],
+    tooltip: "Export pre poisťovne zo schválených návštev",
+    tooltipShort: "Export pre poisťovne",
     rects: [
-      { x: 12, y: 318, w: 170, h: 30 },
-      { x: 990, y: 53, w: 186, h: 37 },
+      { x: 384, y: 86, w: 126, h: 34 },
+      { x: 568, y: 151, w: 96, h: 32 },
     ] as Rect[],
-    counts: { caka: 0, schvalene: 6, vratene: 1, export: 6 },
+    counts: { caka: 54, upozornenie: 0, vratene: 1, schvalene: 157 },
   },
 ] as const;
 
 type Stop = (typeof STOPS)[number];
 
 const COUNTERS = [
-  { key: "caka", label: "Na kontrolu", labelShort: "Na kontrolu" },
-  { key: "schvalene", label: "Skontrolované dnes", labelShort: "Skontrolované" },
+  { key: "caka", label: "Čakajú na kontrolu", labelShort: "Na kontrolu" },
+  { key: "upozornenie", label: "S upozornením", labelShort: "S upozornením" },
   { key: "vratene", label: "Vrátené sestre", labelShort: "Vrátené sestre" },
-  { key: "export", label: "Pripravené na vykazovanie", labelShort: "Na vykazovanie" },
+  { key: "schvalene", label: "Schválené v októbri", labelShort: "Schválené" },
 ] as const;
 
 const PLANNED = [
-  "Plánovanie sestier a návštev",
-  "Problémy a výnimky",
-  "Prehľad prevádzky",
+  "Plánovanie návštev a zastupovanie",
+  "Kontrola a schvaľovanie návštev",
+  "Podklady pre poisťovne",
+  "Štatistiky",
+  "Nový pacient z dokumentu (AI)",
 ];
 
 const W = 1200;
-const H = 794;
+const H = 816;
 
 /* Dashboard with spotlight: the mask darkens everything except the active stop's areas */
 function Dashboard({ active, tipId, sizes }: { active: number; tipId: string; sizes: string }) {
   const stop = STOPS[active];
   const first = stop.rects[0];
   return (
-    <div
-      className="relative w-full overflow-hidden rounded-12 bg-bg-surface shadow-[0_24px_48px_-12px_rgba(20,23,31,0.14)] ring-1 ring-border-default"
-      style={{ aspectRatio: `${W} / ${H}` }}
-    >
-      <Image
-        src="/images/dashboard-v2.png"
-        alt="Koncept webového prehľadu pre vedúcu sestru a administratívu: schvaľovanie návštev s tabuľkou návštev a detailom pacienta. Štítok Náhľad: koncept pripravovaného produktu, ukážkové údaje."
-        width={2400}
-        height={1588}
-        sizes={sizes}
-        className="pointer-events-none absolute inset-0 h-auto w-full"
-      />
-      <div className="office-spot pointer-events-none absolute inset-0" aria-hidden="true">
-        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full">
-          <defs>
-            <mask id={`${tipId}-mask`}>
-              <rect x="0" y="0" width={W} height={H} fill="white" />
-              {stop.rects.map((r, i) => (
-                <rect
-                  key={i}
-                  x={r.x}
-                  y={r.y}
-                  width={r.w}
-                  height={r.h}
-                  rx="10"
-                  fill="black"
-                  className="office-rect"
-                />
-              ))}
-            </mask>
-          </defs>
-          <rect x="0" y="0" width={W} height={H} fill="#14181f" fillOpacity="0.5" mask={`url(#${tipId}-mask)`} />
-          {stop.rects.map((r, i) => (
-            <rect
-              key={i}
-              x={r.x}
-              y={r.y}
-              width={r.w}
-              height={r.h}
-              rx="10"
-              fill="none"
-              stroke="#0f8b8d"
-              strokeWidth="2"
-              vectorEffect="non-scaling-stroke"
-              className="office-rect"
-            />
-          ))}
-        </svg>
-        <span
-          id={tipId}
-          role="tooltip"
-          className="office-rect absolute inline-flex max-w-[88%] -translate-y-full items-center whitespace-nowrap rounded-full bg-accent px-2.5 py-1 text-caption text-text-inverse lg:px-3 lg:py-1.5 lg:text-label-s shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
-          style={{ left: `${(first.x / W) * 100}%`, top: `calc(${(first.y / H) * 100}% - 8px)` }}
-        >
-          <span className="lg:hidden">{stop.tooltipShort}</span>
-          <span className="hidden lg:inline">{stop.tooltip}</span>
-        </span>
+    <BrowserFrame className="w-full shadow-[0_24px_48px_-12px_rgba(20,23,31,0.14)]">
+      <div className="relative w-full" style={{ aspectRatio: `${W} / ${H}` }}>
+        <Image
+          src="/images/web-reporting-2610.png"
+          alt="Webová aplikácia Alma ADOS, Vykazovanie: návštevy čakajúce na kontrolu, filtre podľa stavu a návštevy s hodnotou mimo normy. Ukážkové údaje."
+          width={2400}
+          height={1633}
+          sizes={sizes}
+          className="pointer-events-none absolute inset-0 h-auto w-full"
+        />
+        <div className="office-spot pointer-events-none absolute inset-0" aria-hidden="true">
+          <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="absolute inset-0 size-full">
+            <defs>
+              <mask id={`${tipId}-mask`}>
+                <rect x="0" y="0" width={W} height={H} fill="white" />
+                {stop.rects.map((r, i) => (
+                  <rect
+                    key={i}
+                    x={r.x}
+                    y={r.y}
+                    width={r.w}
+                    height={r.h}
+                    rx="10"
+                    fill="black"
+                    className="office-rect"
+                  />
+                ))}
+              </mask>
+            </defs>
+            <rect x="0" y="0" width={W} height={H} fill="#14181f" fillOpacity="0.5" mask={`url(#${tipId}-mask)`} />
+            {stop.rects.map((r, i) => (
+              <rect
+                key={i}
+                x={r.x}
+                y={r.y}
+                width={r.w}
+                height={r.h}
+                rx="10"
+                fill="none"
+                stroke="#0f8b8d"
+                strokeWidth="2"
+                vectorEffect="non-scaling-stroke"
+                className="office-rect"
+              />
+            ))}
+          </svg>
+          <span
+            id={tipId}
+            role="tooltip"
+            className="office-rect absolute inline-flex max-w-[88%] -translate-y-full items-center whitespace-nowrap rounded-full bg-accent px-2.5 py-1 text-caption text-text-inverse lg:px-3 lg:py-1.5 lg:text-label-s shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)]"
+            style={{ left: `${(first.x / W) * 100}%`, top: `calc(${(first.y / H) * 100}% - 8px)` }}
+          >
+            <span className="lg:hidden">{stop.tooltipShort}</span>
+            <span className="hidden lg:inline">{stop.tooltip}</span>
+          </span>
+        </div>
       </div>
-    </div>
+    </BrowserFrame>
   );
 }
 
-/* Day status: numbers that change with the stops (so the dashboard is not just an image) */
+/* Status counts (same filters as in the screenshot) that change with the stops, so the screen is not just an image */
 function DayCounters({ active, compact = false }: { active: number; compact?: boolean }) {
   const c = STOPS[active].counts;
   return (
@@ -430,8 +432,8 @@ export function OfficeDay() {
             ))}
           </ul>
           <p className="gsap-reveal max-w-[72ch] text-body-s text-text-secondary">
-            Rozsah webovej časti nastavíme s pilotnými partnermi. Priame prepojenie s poisťovňami nie je súčasťou
-            prvej verzie, podklady pre vykazovanie áno.
+            Tieto časti webovej aplikácie dnes testujeme a dolaďujeme s pilotnými partnermi. Priame prepojenie
+            s poisťovňami nie je súčasťou prvej verzie, podklady pre vykazovanie áno.
           </p>
         </div>
       </div>

@@ -2,11 +2,13 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
+import { BrowserFrame } from "@/components/ui/Browser";
+import { PhoneFrame } from "@/components/ui/Phone";
 import { HeroMotion } from "@/components/sections/HeroMotion";
 
 /*
-  Hero visual = two Figma exports cropped exactly to the mockup (Browser · Backoffice 1040 × 705,
-  Phone · Sestra 296 × 622, both 2×). Shadows and rounding are in CSS so the decor stays visible underneath.
+  Hero visual = real app screenshots (demo agency) in CSS frames: web Plánovanie in BrowserFrame (1040 wide),
+  nurse app in PhoneFrame (296 wide). Shadows and rounding are in CSS so the decor stays visible underneath.
   Percentages are relative to the 1200 × 718 frame (desktop) or the 1000 × 900 mobile composition (browser 124 % wide, slightly overflowing the edges).
 */
 function Route({
@@ -109,42 +111,42 @@ export function Hero() {
             <div className="relative w-full aspect-[1000/900] sm:aspect-[1200/718]">
               <div
                 data-hero="browser"
-                className="absolute left-[-12%] top-0 w-[124%] max-w-none overflow-hidden rounded-[14px] bg-bg-surface shadow-[0_2px_6px_rgba(20,23,31,0.06),0_24px_48px_-12px_rgba(20,23,31,0.1)] sm:left-0 sm:w-[86.667%]"
+                className="absolute left-[-12%] top-0 w-[124%] max-w-none rounded-12 shadow-[0_2px_6px_rgba(20,23,31,0.06),0_24px_48px_-12px_rgba(20,23,31,0.1)] sm:left-0 sm:w-[86.667%]"
               >
-                <Image
-                  src="/images/hero-browser-v2.png"
-                  alt="Koncept webového prehľadu pre vedúcu sestru a administratívu: dnešné návštevy, sestry v teréne, mapa trás a upozornenia"
-                  width={2080}
-                  height={1410}
-                  priority
-                  sizes="(min-width: 1280px) 1040px, 100vw"
-                  className="h-auto w-full"
-                />
+                <BrowserFrame>
+                  {/* The week continues below the fold; the crop keeps the frame at the original composition height */}
+                  <div className="relative aspect-[1200/780] w-full">
+                    <Image
+                      src="/images/web-planning-2610.png"
+                      alt="Webová aplikácia Alma ADOS, Plánovanie: týždeň návštev rozdelený podľa sestier s časmi, kódmi výkonov a menami pacientov"
+                      fill
+                      priority
+                      sizes="(min-width: 1280px) 1040px, 124vw"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                </BrowserFrame>
               </div>
               <div
                 data-hero="phone-wrap"
                 className="absolute left-[60%] top-[1.5%] w-[40%] sm:left-[75.333%] sm:top-[13.37%] sm:w-[24.667%]"
               >
-                <div
-                  data-hero="phone"
-                  className="overflow-hidden rounded-[12%/5.8%] shadow-[0_32px_64px_-16px_rgba(20,23,31,0.22)]"
-                >
-                  <Image
-                    src="/images/hero-phone.png"
-                    alt="Koncept mobilnej aplikácie pre sestru: detail návštevy pacienta s plánom starostlivosti"
-                    width={592}
-                    height={1244}
-                    sizes="(min-width: 1280px) 296px, 40vw"
-                    priority
-                    className="h-auto w-full"
-                  />
+                <div data-hero="phone">
+                  <PhoneFrame>
+                    <Image
+                      src="/images/phone-visit-detail-2610.png"
+                      alt="Aplikácia pre sestry: detail návštevy pred začatím s pacientom, plánovanými výkonmi a tlačidlom Začať návštevu"
+                      fill
+                      sizes="(min-width: 1280px) 280px, 40vw"
+                      priority
+                      className="object-cover object-top"
+                    />
+                  </PhoneFrame>
                 </div>
               </div>
-              <div data-hero="label" className="absolute bottom-[1%] left-[2%] sm:bottom-[4.4%] sm:left-[1.6%]">
-                <PreviewLabel>
-                  <span className="sm:hidden">Koncept · ukážkové údaje</span>
-                  <span className="hidden sm:inline">Koncept pripravovaného produktu · ukážkové údaje</span>
-                </PreviewLabel>
+              {/* Right of the app sidebar, so the label never covers its dark background */}
+              <div data-hero="label" className="absolute bottom-[1%] left-[10%] sm:bottom-[4.4%] sm:left-[16.5%]">
+                <PreviewLabel />
               </div>
             </div>
           </figure>
