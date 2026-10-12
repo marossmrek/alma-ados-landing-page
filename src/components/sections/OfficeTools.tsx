@@ -13,8 +13,10 @@ const TOOLS: {
   points: string[];
   note?: { icon: IconName; text: string };
   screen: string;
-  /* Pixel height at 2400 px width (the Dnes capture is a little shorter than the others) */
+  /* Pixel height at 2400 px width (the Dnes capture is a full wide screen, the others 1440 px) */
   height?: number;
+  /* Wide screenshot: full container width with the text below, otherwise it would be too small to read */
+  wide?: boolean;
   alt: string;
 }[] = [
   {
@@ -26,8 +28,9 @@ const TOOLS: {
       "Mapa, kde sú sestry podľa poslednej návštevy",
       "Upozornenia, ktoré treba vyriešiť",
     ],
-    screen: "/images/web-today-2610.png",
-    height: 1607,
+    screen: "/images/web-dnes-2610.png",
+    height: 1099,
+    wide: true,
     alt: "Webová aplikácia, Dnes: počty návštev, schválení a upozornení, sestry dnes s postupom a spojením a mapa sestier",
   },
   {
@@ -80,43 +83,76 @@ export function OfficeTools() {
         />
 
         <div className="flex flex-col gap-12 lg:gap-20">
-          {TOOLS.map((t, i) => (
-            <article
-              key={t.title}
-              className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14"
-            >
-              <div className={cx("gsap-reveal", i % 2 === 1 && "lg:order-2")}>
-                <BrowserFrame className="shadow-[0_24px_48px_-12px_rgba(20,23,31,0.14)]">
-                  <Image
-                    src={t.screen}
-                    alt={t.alt}
-                    width={2400}
-                    height={t.height ?? 1633}
-                    sizes="(min-width: 1280px) 680px, (min-width: 1024px) 56vw, 100vw"
-                    className="h-auto w-full"
-                  />
-                </BrowserFrame>
-              </div>
-              <div className="flex flex-col items-start gap-4 lg:gap-5">
+          {TOOLS.map((t) => {
+            const shot = (
+              <BrowserFrame className="shadow-[0_24px_48px_-12px_rgba(20,23,31,0.14)]">
+                <Image
+                  src={t.screen}
+                  alt={t.alt}
+                  width={2400}
+                  height={t.height ?? 1633}
+                  sizes={
+                    t.wide
+                      ? "(min-width: 1280px) 1200px, 100vw"
+                      : "(min-width: 1280px) 680px, (min-width: 1024px) 56vw, 100vw"
+                  }
+                  className="h-auto w-full"
+                />
+              </BrowserFrame>
+            );
+            const intro = (
+              <>
                 <Badge variant="status" className="gsap-reveal">
                   Vo vývoji
                 </Badge>
                 <h3 className="gsap-reveal text-h3 text-text-primary">{t.title}</h3>
                 <p className="gsap-reveal text-body-m text-text-secondary lg:text-body-l">{t.text}</p>
-                <ul className="gsap-reveal flex flex-col gap-3">
-                  {t.points.map((p) => (
-                    <CheckItem key={p}>{p}</CheckItem>
-                  ))}
-                </ul>
-                {t.note && (
-                  <p className="gsap-reveal flex items-start gap-2.5 text-body-s text-text-secondary">
-                    <Icon name={t.note.icon} className="mt-0.5 size-4 shrink-0 text-accent-text" />
-                    {t.note.text}
-                  </p>
-                )}
-              </div>
-            </article>
-          ))}
+              </>
+            );
+            const points = (
+              <ul className="gsap-reveal flex flex-col gap-3">
+                {t.points.map((p) => (
+                  <CheckItem key={p}>{p}</CheckItem>
+                ))}
+              </ul>
+            );
+            const note = t.note && (
+              <p className="gsap-reveal flex items-start gap-2.5 text-body-s text-text-secondary">
+                <Icon name={t.note.icon} className="mt-0.5 size-4 shrink-0 text-accent-text" />
+                {t.note.text}
+              </p>
+            );
+
+            if (t.wide) {
+              return (
+                <article key={t.title} className="flex flex-col gap-6 lg:gap-10">
+                  <div className="gsap-reveal">{shot}</div>
+                  <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-14">
+                    <div className="flex flex-col items-start gap-4 lg:gap-5">
+                      {intro}
+                      {note}
+                    </div>
+                    {points}
+                  </div>
+                </article>
+              );
+            }
+            // Side by side rows alternate the screenshot left and right
+            const flip = TOOLS.filter((x) => !x.wide).indexOf(t) % 2 === 1;
+            return (
+              <article
+                key={t.title}
+                className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14"
+              >
+                <div className={cx("gsap-reveal", flip && "lg:order-2")}>{shot}</div>
+                <div className="flex flex-col items-start gap-4 lg:gap-5">
+                  {intro}
+                  {points}
+                  {note}
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div className="gsap-reveal flex w-full flex-col gap-4 rounded-16 bg-bg-muted p-6 sm:flex-row sm:items-start sm:gap-5 lg:px-8 lg:py-7">
