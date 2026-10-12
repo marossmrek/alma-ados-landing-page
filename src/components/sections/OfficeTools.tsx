@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { CheckItem } from "@/components/ui/CheckItem";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
-/* Two more parts of the web app (AI patient intake, statistics) and a note on migration. Continues "V kancelárii". */
+/* More parts of the web app (AI patient intake, planning, statistics) and a note on migration. Continues "V kancelárii". */
 const TOOLS: {
   title: string;
   text: string;
@@ -29,6 +29,18 @@ const TOOLS: {
     alt: "Webová aplikácia, Nový pacient z dokumentu: nahratie dokumentov pacienta a zoznam údajov, ktoré AI predvyplní",
   },
   {
+    title: "Plánovanie návštev",
+    text: "Týždeň návštev všetkých sestier na jednom mieste. Návštevy sa dajú naplánovať ručne alebo nechať navrhnúť podľa plánu starostlivosti.",
+    points: [
+      "Pohľad na týždeň alebo deň, pre všetky sestry alebo jednu",
+      "Návrh týždňa podľa plánu starostlivosti",
+      "Neprítomnosť sestry a zastupovanie",
+      "Návštevy na preplánovanie na jednom mieste",
+    ],
+    screen: "/images/web-planning-2610.png",
+    alt: "Webová aplikácia, Plánovanie: týždeň návštev rozdelený podľa sestier s tlačidlami Navrhnúť týždeň podľa plánu a Pridať neprítomnosť",
+  },
+  {
     title: "Štatistiky",
     text: "Prehľad o práci agentúry za mesiac, štvrťrok alebo rok, s porovnaním s predchádzajúcim obdobím.",
     points: [
@@ -44,12 +56,12 @@ const TOOLS: {
 
 export function OfficeTools() {
   return (
-    <section aria-label="Nový pacient z dokumentu a štatistiky" className="pb-12 lg:pb-32">
+    <section aria-label="Nový pacient, plánovanie a štatistiky" className="pb-12 lg:pb-32">
       <div className="container-page flex flex-col gap-10 lg:gap-16">
         <SectionHeader
           eyebrow="Administratíva"
-          title="Nový pacient bez prepisovania. Prehľad o celej agentúre."
-          lead="Ďalšie časti webovej aplikácie, ktoré dnes testujeme a dolaďujeme: príjem nového pacienta z dokumentu a štatistiky agentúry."
+          title="Od nového pacienta po plán návštev a štatistiky."
+          lead="Ďalšie časti webovej aplikácie, ktoré dnes testujeme a dolaďujeme: príjem nového pacienta z dokumentu, plánovanie návštev a štatistiky agentúry."
         />
 
         <div className="flex flex-col gap-12 lg:gap-20">

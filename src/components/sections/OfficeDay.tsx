@@ -16,7 +16,7 @@ import { Counter } from "@/components/ui/Counter";
 import { Icon } from "@/components/ui/Icon";
 
 /*
-  Head nurse overview in three stops. Same language as "Jeden deň sestry" (FieldDay):
+  Head nurse overview in three stops. Same language as "Priebeh návštevy" (FieldDay):
   pinned panel, timeline, screenshot spotlight switched by scroll.
   Area coordinates are in the 1200 × 816 space of the Vykazovanie screenshot (2400 × 1633 at 2×).
 */
