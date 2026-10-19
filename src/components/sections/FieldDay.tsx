@@ -306,7 +306,7 @@ export function FieldDay() {
       <div className="container-page flex flex-col gap-10 lg:gap-16">
         <SectionHeader
           eyebrow="V teréne"
-          title="Jedna návšteva. Od plánu po hotový záznam."
+          title="Dokumentácia vzniká pri pacientovi, nie večer v kancelárii."
           lead="Takto prebieha návšteva s Alma ADOS pri akomkoľvek výkone: záznam vzniká počas návštevy na telefóne a kancelária ho má k dispozícii priebežne, bez zbytočného prepisovania."
         />
 

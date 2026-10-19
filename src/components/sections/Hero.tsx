@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/Button";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
 import { BrowserFrame } from "@/components/ui/Browser";
 import { PhoneFrame } from "@/components/ui/Phone";
-import { BrochureButton } from "@/components/ui/BrochureButton";
 import { HeroMotion } from "@/components/sections/HeroMotion";
 
 /*
@@ -85,20 +84,18 @@ export function Hero() {
           >
             <Badge variant="status">Vo vývoji · Plánované spustenie 2027</Badge>
             <h1 className="text-mobile-h1 text-text-primary lg:text-display">
-              Dokumentácia vzniká pri pacientovi,{" "}
+              Čas patrí pacientom.{" "}
               <br className="hidden lg:block" />
-              nie večer v kancelárii.
+              Nie papierom.
             </h1>
             <p className="max-w-[760px] text-body-l text-text-secondary lg:text-lead">
               Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý
               prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.
             </p>
-            <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-center">
+            <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:items-center">
               <Button href="#kontakt" focusTarget="#pilot-form [name='name']" arrow>
-                <span className="sm:hidden">Chcem sa zapojiť do pilotu</span>
-                <span className="hidden sm:inline">Chcem sa zapojiť do pilotného programu</span>
+                Zapojiť sa do pilotu
               </Button>
-              <BrochureButton />
               <Button href="#produkt" variant="secondary">
                 Pozrieť, ako to funguje
               </Button>
