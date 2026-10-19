@@ -8,6 +8,7 @@ import { Logo } from "@/components/ui/Logo";
 import { NavLink } from "@/components/ui/NavLink";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { BrochureButton } from "@/components/ui/BrochureButton";
 import { Icon } from "@/components/ui/Icon";
 import { NAV_LINKS, MOBILE_NAV_LINKS, SECTION_IDS, CONTACT } from "@/lib/nav";
 import { handleAnchorClick } from "@/lib/scroll";
@@ -104,6 +105,7 @@ export function Nav() {
 
         <div className="hidden items-center gap-4 lg:flex">
           {!compact && <Badge variant="status">Vo vývoji · 2027</Badge>}
+          <BrochureButton size="M" compact />
           <Button href="/#kontakt" focusTarget="#pilot-form [name='name']" size="M" arrow={compact}>
             Zapojiť sa do pilotu
           </Button>
@@ -208,6 +210,7 @@ export function Nav() {
             >
               Chcem sa zapojiť do pilotného programu
             </Button>
+            <BrochureButton className="w-full" onClick={() => setMenuOpen(false)} />
             <a href={`mailto:${CONTACT.email}`} className="focus-ring rounded-[4px] text-body-s text-text-secondary">
               {CONTACT.email}
             </a>

@@ -62,8 +62,10 @@ export function Button(props: ButtonProps) {
       onClick?.(e);
       handleAnchorClick(e, href, router, focusTarget);
     };
+    // Download links (PDF): never prefetch, the browser handles the click natively
+    const prefetch = anchor.download !== undefined ? false : undefined;
     return (
-      <Link href={href} className={cls} onClick={handleClick} {...anchor}>
+      <Link href={href} className={cls} onClick={handleClick} prefetch={prefetch} {...anchor}>
         {content}
       </Link>
     );

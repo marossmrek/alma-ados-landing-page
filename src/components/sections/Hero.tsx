@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { PreviewLabel } from "@/components/ui/PreviewLabel";
 import { BrowserFrame } from "@/components/ui/Browser";
 import { PhoneFrame } from "@/components/ui/Phone";
+import { BrochureButton } from "@/components/ui/BrochureButton";
 import { HeroMotion } from "@/components/sections/HeroMotion";
 
 /*
@@ -92,11 +93,12 @@ export function Hero() {
               Vyvíjame moderný systém pre agentúry domácej ošetrovateľskej starostlivosti, ktorý
               prepája prácu sestier v teréne s plánovaním, dokumentáciou a administratívou v kancelárii.
             </p>
-            <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:items-center">
+            <div className="flex w-full flex-col items-stretch gap-3 pt-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-center">
               <Button href="#kontakt" focusTarget="#pilot-form [name='name']" arrow>
                 <span className="sm:hidden">Chcem sa zapojiť do pilotu</span>
                 <span className="hidden sm:inline">Chcem sa zapojiť do pilotného programu</span>
               </Button>
+              <BrochureButton />
               <Button href="#produkt" variant="secondary">
                 Pozrieť, ako to funguje
               </Button>
