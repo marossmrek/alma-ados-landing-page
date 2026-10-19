@@ -87,24 +87,39 @@ export function Nav() {
           : "border-b border-border-subtle py-4 lg:py-5",
       )}
     >
-      <div className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 lg:px-10 xl:px-[120px]">
-        <div className="lg:hidden">
+      {/*
+        Header gutter 24 px, 40 px from xl (narrower than the 120 px page gutter: the row with the status badge
+        is about 1220 px, more than the 1200 px page width). Below xl the logo is the small variant and the links
+        use the small label; the status badge duplicates the one in the hero and shows from 1440 px (90rem),
+        where the header has room for it next to the brochure button.
+      */}
+      <div className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 xl:px-10">
+        <div className="xl:hidden">
           <Logo size="S" />
         </div>
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <Logo size="L" />
         </div>
 
         <nav aria-label="Hlavná navigácia" className="hidden items-start gap-1 lg:flex">
           {NAV_LINKS.map((l) => (
-            <NavLink key={l.href} href={l.href} active={activeHref === l.href}>
+            <NavLink
+              key={l.href}
+              href={l.href}
+              active={activeHref === l.href}
+              className="max-xl:px-2 max-xl:text-label-s max-xl:after:left-2 max-xl:after:right-2"
+            >
               {l.label}
             </NavLink>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          {!compact && <Badge variant="status">Vo vývoji · 2027</Badge>}
+        <div className="hidden items-center gap-3 lg:flex xl:gap-4">
+          {!compact && (
+            <Badge variant="status" className="max-[90rem]:hidden">
+              Vo vývoji · 2027
+            </Badge>
+          )}
           <BrochureButton size="M" compact />
           <Button href="/#kontakt" focusTarget="#pilot-form [name='name']" size="M" arrow={compact}>
             Zapojiť sa do pilotu
