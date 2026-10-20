@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { BrochureButton } from "@/components/ui/BrochureButton";
 import { Icon } from "@/components/ui/Icon";
 import { NAV_LINKS, MOBILE_NAV_LINKS, SECTION_IDS, CONTACT } from "@/lib/nav";
+import { BROCHURE } from "@/lib/brochure";
 import { handleAnchorClick } from "@/lib/scroll";
 import { useRouter } from "next/navigation";
 
@@ -93,7 +94,8 @@ export function Nav() {
         use the small label; the status badge duplicates the one in the hero and shows from 1440 px (90rem),
         where the header has room for it next to the brochure button.
       */}
-      <div className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 xl:px-10">
+      {/* Narrow phones: 16 px gutter like container-page, so the logo, brochure icon, CTA and menu toggle fit at 360 px */}
+      <div className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-4 min-[401px]:px-6 xl:px-10">
         <div className="xl:hidden">
           <Logo size="S" />
         </div>
@@ -126,7 +128,8 @@ export function Nav() {
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
+          <BrochureButton iconOnly />
           <Button href="/#kontakt" focusTarget="#pilot-form [name='name']" size="M">
             Zapojiť sa
           </Button>
@@ -211,6 +214,21 @@ export function Nav() {
                   </li>
                 );
               })}
+              <li className="border-b border-border-default">
+                <a
+                  href={BROCHURE.href}
+                  download
+                  onClick={() => setMenuOpen(false)}
+                  aria-label={`${BROCHURE.label} (${BROCHURE.meta})`}
+                  className="focus-ring flex items-center justify-between rounded-8 py-[18px] text-h4 text-text-primary"
+                >
+                  <span className="flex flex-col gap-0.5">
+                    {BROCHURE.menuLabel}
+                    <span className="text-caption text-text-tertiary">{BROCHURE.meta}</span>
+                  </span>
+                  <Icon name="download" className="size-[18px] text-text-tertiary" />
+                </a>
+              </li>
             </ul>
           </nav>
           <div className="flex-1" />
@@ -225,7 +243,6 @@ export function Nav() {
             >
               Chcem sa zapojiť do pilotného programu
             </Button>
-            <BrochureButton className="w-full" onClick={() => setMenuOpen(false)} />
             <a href={`mailto:${CONTACT.email}`} className="focus-ring rounded-[4px] text-body-s text-text-secondary">
               {CONTACT.email}
             </a>

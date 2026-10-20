@@ -8,5 +8,7 @@ export const BROCHURE = {
   label: "Stiahnuť produktovú brožúru",
   /* Desktop header, where the full label does not fit next to the navigation */
   shortLabel: "Brožúra",
+  /* Mobile menu list item */
+  menuLabel: "Produktová brožúra",
   meta: "PDF · 10,7 MB",
 } as const;

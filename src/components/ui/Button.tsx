@@ -7,7 +7,7 @@ import { cx } from "@/lib/cx";
 import { handleAnchorClick } from "@/lib/scroll";
 
 type Variant = "primary" | "secondary" | "ghost" | "inverse";
-type Size = "L" | "M";
+type Size = "L" | "M" | "icon";
 
 const base =
   "group focus-ring inline-flex items-center justify-center gap-2 rounded-12 font-medium whitespace-nowrap transition-[background-color,color,border-color,transform] duration-150 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40";
@@ -23,6 +23,8 @@ const variants: Record<Variant, string> = {
 const sizes: Record<Size, string> = {
   L: "px-6 py-3.5 text-[16px] leading-[1.3]",
   M: "px-[18px] py-2.5 text-[14px] leading-[1.3]",
+  /* Square icon-only button, same footprint as the mobile menu toggle */
+  icon: "size-10 p-0",
 };
 
 type CommonProps = {

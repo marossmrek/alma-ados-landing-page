@@ -14,17 +14,36 @@ export function BrochureButton({
   variant = "secondary",
   size = "L",
   compact = false,
+  iconOnly = false,
   className,
   onClick,
 }: {
   variant?: ButtonProps["variant"];
   size?: ButtonProps["size"];
-  /* Header: icon + short label only, the full label and size stay in the tooltip and for screen readers */
+  /* Desktop header: icon + short label only, the full label and size stay in the tooltip and for screen readers */
   compact?: boolean;
+  /* Mobile header: square button with the icon only */
+  iconOnly?: boolean;
   className?: string;
   onClick?: () => void;
 }) {
   const full = `${BROCHURE.label} (${BROCHURE.meta})`;
+  if (iconOnly) {
+    return (
+      <Button
+        href={BROCHURE.href}
+        download
+        variant={variant}
+        size="icon"
+        className={className}
+        onClick={onClick}
+        aria-label={full}
+        title={full}
+      >
+        <Icon name="download" className="size-5" />
+      </Button>
+    );
+  }
   return (
     <Button
       href={BROCHURE.href}
